@@ -1121,10 +1121,23 @@ async function analyzeOne(q,sel){
   const target=$('target').value,dur=await fileDuration(q.file),instr=buildAnalyze(kind,target,STYLE,dur);
   const maxTok=(kind==='scenes'||kind==='dual'||(kind==='video'&&DURATION!=='10s'))?8192:undefined;
   let b64cache=null,b64done=false;
+  const geminiModels=()=>[$('gmodel').value,'gemini-3.6-flash','gemini-3.8-flash','gemini-flash-latest'].filter((m,i,a)=>a.indexOf(m)===i);
   const getText=()=>resilientCall(sel.provider,async s=>{
     if(s.provider==='gemini'){
       if(!b64done){b64cache=await fileToB64(q.file);b64done=true}
-      return await callGemini([{text:instr},{inlineData:{mimeType:q.file.type,data:b64cache}}],$('gmodel').value,s.key,maxTok);
+      const models=geminiModels();
+      let lastErr=null;
+      for(const m of models){
+        try{
+          if(m!==models[0]&&$('status'))$('status').textContent='Trying '+m+'…';
+          return await callGemini([{text:instr},{inlineData:{mimeType:q.file.type,data:b64cache}}],m,s.key,maxTok);
+        }catch(e){
+          lastErr=e;
+          if(/503|UNAVAILABLE|overloaded|high demand/i.test(e.message||''))continue;
+          throw e;
+        }
+      }
+      throw lastErr;
     }
     const msgs=await buildVisionMessages(q,instr,s.provider);
     return s.provider==='groq'?await callGroq(msgs,s.key,maxTok):await callOR(msgs,s.key,maxTok);
