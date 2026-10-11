@@ -772,7 +772,10 @@ async function resilientCall(want,fn){
   const tried=new Set();
   for(let i=0;i<8;i++){
     const sel=pickProvider(want);
-    if(!sel)throw new Error('Add at least one API key first.');
+    if(!sel){
+      const anyKeys=['gemini','groq','openrouter'].some(p=>getKeys(p).length);
+      throw new Error(anyKeys?'All keys are rate-limited right now. Wait a minute and retry.':'Add at least one API key first.');
+    }
     const id=sel.provider+'|'+sel.key.slice(-8);
     if(tried.has(id))break;
     tried.add(id);
