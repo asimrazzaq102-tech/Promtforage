@@ -81,12 +81,14 @@ nav.dnav a:hover::after{width:100%}
 
 /* brand wordmark hero — code version of the Canva graphic (layout static, colors animate) */
 .hero>*{position:relative;z-index:1}
-.herostage{position:absolute;inset:-30px 0;z-index:0;pointer-events:none;overflow:hidden}
-.herostage i{position:absolute;border-radius:50%;filter:blur(90px)}
-.herostage .s1{width:540px;height:540px;left:50%;top:-200px;margin-left:-420px;background:radial-gradient(circle,rgba(139,92,246,.55),transparent 65%);animation:stageA 14s ease-in-out infinite alternate}
-.herostage .s2{width:480px;height:480px;left:50%;top:-140px;margin-left:-40px;background:radial-gradient(circle,rgba(34,211,238,.5),transparent 65%);animation:stageB 18s ease-in-out infinite alternate}
-@keyframes stageA{from{opacity:.18;transform:scale(1)}to{opacity:.36;transform:scale(1.18)}}
-@keyframes stageB{from{opacity:.36;transform:scale(1.12)}to{opacity:.18;transform:scale(.94)}}
+.herostage{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.herostage i{position:absolute;border-radius:50%;filter:blur(70px);mix-blend-mode:screen}
+.herostage .s1{width:62%;aspect-ratio:1;left:-12%;top:-28%;background:radial-gradient(circle,rgba(139,92,246,.8),transparent 65%);animation:flowA 11s ease-in-out infinite alternate}
+.herostage .s2{width:58%;aspect-ratio:1;right:-14%;top:-22%;background:radial-gradient(circle,rgba(34,211,238,.75),transparent 65%);animation:flowB 14s ease-in-out infinite alternate}
+.herostage .s3{width:48%;aspect-ratio:1;left:28%;bottom:-32%;background:radial-gradient(circle,rgba(217,70,239,.6),transparent 65%);animation:flowC 17s ease-in-out infinite alternate}
+@keyframes flowA{from{transform:translateX(-14%) scale(1);opacity:.55}to{transform:translateX(30%) scale(1.28);opacity:.95}}
+@keyframes flowB{from{transform:translateX(16%) scale(1.22);opacity:.9}to{transform:translateX(-28%) scale(1);opacity:.5}}
+@keyframes flowC{from{transform:translateX(-22%) scale(1);opacity:.5}to{transform:translateX(24%) scale(1.32);opacity:.85}}
 .wordmark{font-family:var(--font-d);font-weight:700;font-size:clamp(54px,9vw,102px);letter-spacing:-3px;line-height:1;margin:8px 0 16px;background:linear-gradient(100deg,#ffffff 15%,#c4b5fd 48%,#67e8f9 82%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 34px rgba(139,92,246,.45))}
 
 /* animated stat counters */
@@ -327,7 +329,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <div class="container">
 
 <div class="hero reveal">
-  <div class="herostage"><i class="s1"></i><i class="s2"></i></div>
+  <div class="herostage"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
   <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
   <div class="wordmark">PromptForge</div>
   <h1>Turn Any Media Into<br><span class="typeblue" id="typeLine"></span><span class="caret">|</span></h1>
