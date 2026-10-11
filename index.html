@@ -571,8 +571,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     </div>
   </div></div>
   <div class="carnav">
-    <button class="cbtn" onclick="carousel.scrollBy({left:-360,behavior:'smooth'})" aria-label="Previous">‹</button>
-    <button class="cbtn" onclick="carousel.scrollBy({left:360,behavior:'smooth'})" aria-label="Next">›</button>
+    <button class="cbtn" onclick="carNav(-1)" aria-label="Previous">‹</button>
+    <button class="cbtn" onclick="carNav(1)" aria-label="Next">›</button>
   </div>
 </div></section>
 
@@ -1026,19 +1026,27 @@ function joinChannel(i){
 }
 (function(){
   const c=document.getElementById('carousel'); if(!c) return;
-  const step=()=>{const k=c.querySelector('.comm-card');return k?k.offsetWidth+20:360};
-  let t=null,resume=null;
-  function play(){stop();t=setInterval(()=>{
-    if(document.hidden)return;
-    if(c.scrollLeft+c.clientWidth>=c.scrollWidth-12){c.scrollTo({left:0,behavior:'smooth'})}
-    else{c.scrollBy({left:step(),behavior:'smooth'})}
-  },3200)}
+  const cards=[...c.querySelectorAll('.comm-card')]; if(!cards.length) return;
+  let idx=0,t=null,resume=null;
+  function go(i){
+    idx=(i+cards.length)%cards.length;
+    cards[idx].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  }
+  function play(){stop();t=setInterval(()=>{if(document.hidden)return;go(idx+1)},2000)}
   function stop(){if(t){clearInterval(t);t=null}}
-  function pauseTemp(){stop();clearTimeout(resume);resume=setTimeout(play,8000)}
+  function pauseTemp(){stop();clearTimeout(resume);resume=setTimeout(play,5000)}
+  let syncT=null; /* user ne haath se swipe kiya to index sync rakho */
+  c.addEventListener('scroll',()=>{clearTimeout(syncT);syncT=setTimeout(()=>{
+    const cr=c.getBoundingClientRect();let best=0,bd=1e9;
+    cards.forEach((k,i)=>{const r=k.getBoundingClientRect();
+      const d=Math.abs((r.left+r.width/2)-(cr.left+cr.width/2));if(d<bd){bd=d;best=i}});
+    idx=best;
+  },140)},{passive:true});
   c.addEventListener('pointerdown',pauseTemp,{passive:true});
   c.addEventListener('wheel',pauseTemp,{passive:true});
   document.addEventListener('visibilitychange',()=>{document.hidden?stop():play()});
   new IntersectionObserver(es=>es.forEach(e=>{e.isIntersecting?play():stop()}),{threshold:.15}).observe(c);
+  window.carNav=d=>{pauseTemp();go(idx+d)};
 })();
 
 refreshKeys();renderLib();
