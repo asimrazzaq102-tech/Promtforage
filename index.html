@@ -14,8 +14,9 @@
   --card:rgba(255,255,255,.028); --card2:rgba(255,255,255,.05);
   --border:rgba(255,255,255,.09); --border2:rgba(255,255,255,.14);
   --text:#eef2fa; --muted:#93a0b8;
-  --accent:#8b5cf6; --accent2:#22d3ee;
+  --accent:#8b5cf6; --accent2:#22d3ee; --blue:#4f8cff;
   --grad:linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#22d3ee 100%);
+  --bluegrad:linear-gradient(135deg,#60a5fa,#2563eb);
   --green:#34d399; --red:#f87171; --amber:#fbbf24;
   --radius:20px;
   --font-d:'Space Grotesk',system-ui,sans-serif;
@@ -33,7 +34,7 @@ a{color:var(--accent2)}
 .orb{position:absolute;border-radius:50%;filter:blur(110px);opacity:.42;animation:drift 22s ease-in-out infinite alternate}
 .orb.o1{width:560px;height:560px;left:-160px;top:-140px;background:radial-gradient(circle,#7c3aed,transparent 65%)}
 .orb.o2{width:520px;height:520px;right:-140px;top:22%;background:radial-gradient(circle,#0e7490,transparent 65%);animation-delay:-8s}
-.orb.o3{width:620px;height:620px;left:24%;bottom:-260px;background:radial-gradient(circle,#4c1d95,transparent 65%);animation-delay:-14s;opacity:.35}
+.orb.o3{width:620px;height:620px;left:24%;bottom:-260px;background:radial-gradient(circle,#1d4ed8,transparent 65%);animation-delay:-14s;opacity:.32}
 @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,50px) scale(1.12)}}
 .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")}
 
@@ -42,24 +43,38 @@ header{position:sticky;top:0;z-index:50;background:rgba(4,6,12,.72);backdrop-fil
 .hd{display:flex;align-items:center;justify-content:space-between;padding:15px 0}
 .logo{font-family:var(--font-d);font-size:22px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.3px}
 .logo::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--grad);margin-right:9px;box-shadow:0 0 14px rgba(139,92,246,.9);vertical-align:2px}
-nav{display:flex;gap:26px}
-nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s;position:relative}
-nav a:hover{color:var(--text)}
-nav a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;background:var(--grad);border-radius:2px;transition:width .25s}
-nav a:hover::after{width:100%}
+nav.dnav{display:flex;gap:26px}
+nav.dnav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s;position:relative}
+nav.dnav a:hover{color:var(--text)}
+nav.dnav a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;background:var(--grad);border-radius:2px;transition:width .25s}
+nav.dnav a:hover::after{width:100%}
+.menu-btn{display:none;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:20px;width:44px;height:44px;border-radius:12px;cursor:pointer}
+
+/* slide-in drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,86vw);background:#0a0f1e;border-left:1px solid var(--border2);z-index:61;transform:translateX(105%);transition:transform .34s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;padding:26px 24px;box-shadow:-30px 0 80px rgba(0,0,0,.6)}
+.drawer.open{transform:none}
+.drawer .dclose{align-self:flex-end;background:none;border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:10px;font-size:17px;cursor:pointer}
+.drawer nav{display:flex;flex-direction:column;gap:6px;margin:22px 0;flex:1}
+.drawer nav a{color:var(--text);text-decoration:none;font-weight:600;font-size:16px;padding:13px 14px;border-radius:12px;transition:.2s}
+.drawer nav a:hover{background:rgba(139,92,246,.12)}
+.drawer .api-settings-btn{display:flex;align-items:center;justify-content:center;gap:9px;background:var(--bluegrad);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:15px;border-radius:14px;box-shadow:0 10px 28px rgba(37,99,235,.4)}
+.drawer .dfoot{margin-top:14px;text-align:center;color:var(--muted);font-size:12px}
 
 /* hero */
 .hero{text-align:center;padding:88px 0 44px;position:relative}
-.badge{display:inline-flex;align-items:center;gap:9px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.35);color:#c4b5fd;font-size:12px;font-weight:700;padding:7px 17px;border-radius:99px;margin-bottom:24px;letter-spacing:1.6px}
+.badge{display:inline-flex;align-items:center;gap:9px;background:rgba(79,140,255,.1);border:1px solid rgba(79,140,255,.35);color:#a9c6ff;font-size:12px;font-weight:700;padding:7px 17px;border-radius:99px;margin-bottom:24px;letter-spacing:1.6px}
 .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.hero h1{font-family:var(--font-d);font-size:clamp(34px,6vw,66px);font-weight:700;line-height:1.08;letter-spacing:-1.5px;margin-bottom:20px}
-.hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero .lead{color:var(--muted);max-width:660px;margin:0 auto 30px;font-size:17px}
-.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.stat{display:inline-flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--text);backdrop-filter:blur(8px);transition:transform .2s,border-color .2s}
-.stat:hover{transform:translateY(-2px);border-color:var(--border2)}
-.stat .ic{font-size:16px}
+.hero h1{font-family:var(--font-d);font-size:clamp(34px,6vw,64px);font-weight:700;line-height:1.14;letter-spacing:-1.5px;margin-bottom:20px}
+.typeblue{color:var(--blue);text-shadow:0 0 34px rgba(79,140,255,.55);white-space:nowrap}
+.caret{display:inline-block;color:var(--blue);font-weight:300;animation:blink 1s step-end infinite;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero .lead{color:var(--muted);max-width:660px;margin:0 auto 28px;font-size:17px}
+.qchips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.qchip{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;padding:8px 17px;border-radius:99px;cursor:pointer;transition:.2s;font-family:inherit}
+.qchip:hover{color:var(--text);border-color:var(--blue);box-shadow:0 0 18px rgba(79,140,255,.25);transform:translateY(-1px)}
 
 /* sections & cards */
 section{padding:30px 0;scroll-margin-top:90px}
@@ -69,6 +84,8 @@ section{padding:30px 0;scroll-margin-top:90px}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:2.6px;color:var(--accent2);margin-bottom:10px}
 .card h2{font-family:var(--font-d);font-size:25px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px}
 .card .sub{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+.cardhead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px;flex-wrap:wrap}
+.secttl{font-family:var(--font-d);font-size:clamp(24px,4vw,36px);font-weight:700;letter-spacing:-.8px;text-align:center;margin-bottom:8px}
 label.lbl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:18px 0 8px;letter-spacing:1.2px;text-transform:uppercase}
 input[type=text],input[type=password],select,textarea{width:100%;background:rgba(4,8,18,.7);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.18)}
@@ -76,36 +93,72 @@ textarea{min-height:110px;resize:vertical;line-height:1.55}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2393a0b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer}
 .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.keywrap{position:relative}
-.keywrap .st{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:4px 11px;border-radius:99px;white-space:nowrap}
-.st.ok{background:rgba(52,211,153,.14);color:var(--green);border:1px solid rgba(52,211,153,.3)}
-.st.no{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.28)}
-.keyhint{font-size:12px;color:var(--muted);margin-top:7px}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--grad);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s,opacity .18s;box-shadow:0 10px 28px rgba(139,92,246,.35)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--grad);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s,opacity .18s;box-shadow:0 10px 28px rgba(139,92,246,.35);text-decoration:none}
 .btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(139,92,246,.5)}
 .btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);box-shadow:none}
 .btn.ghost:hover{border-color:var(--border2);background:rgba(255,255,255,.08);box-shadow:0 8px 22px rgba(0,0,0,.35)}
 .btn.sm{padding:9px 18px;font-size:13px;border-radius:10px}
+.btn.bluebtn{background:var(--bluegrad);box-shadow:0 10px 28px rgba(37,99,235,.4)}
+.btn.bluebtn:hover{box-shadow:0 14px 34px rgba(37,99,235,.55)}
+.btn.outline-blue{background:transparent;border:1.5px solid var(--blue);color:#a9c6ff;box-shadow:none;width:100%;margin-top:10px}
+.btn.outline-blue:hover{background:rgba(79,140,255,.1);box-shadow:0 8px 24px rgba(79,140,255,.25)}
 .btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
 
-/* segmented pills */
+/* segmented pills + chips */
 .pills{display:inline-flex;background:rgba(4,8,18,.6);border:1px solid var(--border);border-radius:15px;padding:5px;gap:5px;flex-wrap:wrap;max-width:100%}
 .pill{padding:10px 20px;border-radius:11px;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;user-select:none;transition:all .22s;border:1px solid transparent;white-space:nowrap}
 .pill:hover{color:var(--text)}
 .pill.on{background:var(--grad);color:#fff;box-shadow:0 5px 18px rgba(139,92,246,.45);font-weight:700}
+#modePills{display:grid;grid-template-columns:1fr 1fr;width:100%;text-align:center}
+#modePills .pill{padding:14px 10px;font-size:13.5px}
+.chips{display:flex;gap:9px;flex-wrap:wrap}
+.chip{padding:9px 19px;border-radius:99px;border:1px solid var(--border);background:rgba(4,8,18,.55);color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;user-select:none;transition:.2s;font-family:inherit}
+.chip:hover{color:var(--text);border-color:var(--border2)}
+.chip.on{background:var(--bluegrad);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(37,99,235,.45)}
+.artgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:9px}
+.apill{padding:11px 8px;border-radius:12px;border:1px solid var(--border);background:rgba(4,8,18,.55);color:var(--muted);font-size:12.5px;font-weight:700;letter-spacing:.4px;cursor:pointer;user-select:none;transition:.2s;text-align:center;font-family:inherit}
+.apill:hover{color:var(--text);border-color:var(--border2);transform:translateY(-1px)}
+.apill.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(139,92,246,.45)}
+
+/* key vault */
+.countbadges{font-size:12px;font-weight:800;letter-spacing:.8px;color:var(--muted);background:rgba(4,8,18,.55);border:1px solid var(--border);border-radius:99px;padding:8px 16px;white-space:nowrap}
+.addkey-row{display:grid;grid-template-columns:1fr 170px auto;gap:10px}
+.vault{margin-top:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.vsub{background:rgba(4,8,18,.55);border:1px solid var(--border);border-radius:16px;padding:18px}
+.vsub .vhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-weight:800;font-size:13px;letter-spacing:.8px}
+.st{font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:4px 11px;border-radius:99px;white-space:nowrap}
+.st.ok{background:rgba(52,211,153,.14);color:var(--green);border:1px solid rgba(52,211,153,.3)}
+.st.no{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.28)}
+.keyrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:8px}
+.kmono{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--text)}
+.krm{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);cursor:pointer;font-size:15px;width:28px;height:28px;border-radius:8px;line-height:1}
+.krm:hover{background:rgba(248,113,113,.2)}
+.empty-dash{border:1.5px dashed var(--border2);border-radius:12px;padding:20px 12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:4px}
+.keylink{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;text-decoration:none}
+.keylink:hover{text-decoration:underline}
+
+/* settings status pill */
+.cardhead .syspill{font-size:12px;font-weight:800;letter-spacing:1px;padding:9px 18px;border-radius:99px;white-space:nowrap}
+.syspill.ok{background:rgba(52,211,153,.13);color:var(--green);border:1px solid rgba(52,211,153,.4);box-shadow:0 0 18px rgba(52,211,153,.2)}
+.syspill.warn{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.4);animation:pulse 2s infinite}
+.flavornote{font-size:12.5px;color:var(--muted);margin-top:8px}
 
 /* dropzone */
-.drop{border:1.5px dashed rgba(139,92,246,.5);border-radius:18px;padding:54px 22px;text-align:center;cursor:pointer;transition:all .25s;margin-top:8px;background:rgba(139,92,246,.04);position:relative;overflow:hidden}
+.drop{border:1.5px dashed rgba(79,140,255,.55);border-radius:18px;padding:50px 22px;text-align:center;cursor:pointer;transition:all .25s;margin-top:8px;background:rgba(79,140,255,.04);position:relative;overflow:hidden}
 .drop:hover{border-color:var(--accent2);background:rgba(34,211,238,.05)}
 .drop.over{border-color:var(--accent2);background:rgba(34,211,238,.08);box-shadow:0 0 0 5px rgba(34,211,238,.1),0 0 50px rgba(34,211,238,.18);transform:scale(1.008)}
-.drop .big{font-size:46px;margin-bottom:12px;animation:floaty 3.4s ease-in-out infinite}
+.drop .dz-title{font-family:var(--font-d);font-size:21px;font-weight:700;margin:12px 0 8px}
+.drop .big{font-size:46px;animation:floaty 3.4s ease-in-out infinite}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.drop p{color:var(--muted);font-size:14px}
-.drop p b{color:var(--text)}
+.drop p{color:var(--muted);font-size:14px;max-width:520px;margin:0 auto}
+.fmtchips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.fmt{background:rgba(79,140,255,.09);border:1px solid rgba(79,140,255,.3);color:#a9c6ff;font-size:11.5px;font-weight:700;letter-spacing:.8px;padding:5px 13px;border-radius:8px}
+.divider{display:flex;align-items:center;gap:14px;margin:22px 0 4px;color:var(--amber);font-size:12.5px;font-weight:800;letter-spacing:1.6px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(251,191,36,.5),transparent)}
 .queue{margin-top:16px;display:flex;flex-direction:column;gap:10px}
 .qitem{display:flex;align-items:center;gap:13px;background:rgba(4,8,18,.55);border:1px solid var(--border);border-radius:14px;padding:10px 15px;font-size:14px;animation:slidein .3s ease}
 @keyframes slidein{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
@@ -120,7 +173,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 /* progress */
 .prog{height:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:99px;overflow:hidden;margin-top:18px;display:none}
-.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width .35s;position:relative;overflow:hidden;border-radius:99px}
+.prog i{display:block;height:100%;width:0;background:var(--bluegrad);transition:width .35s;position:relative;overflow:hidden;border-radius:99px}
 .prog i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:shimmer 1.5s infinite}
 @keyframes shimmer{to{transform:translateX(100%)}}
 .status{font-size:14px;color:var(--muted);margin-top:12px;min-height:24px}
@@ -140,6 +193,21 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .tag:hover{background:rgba(34,211,238,.16)}
 .kv{font-size:13px;color:var(--muted);margin:5px 0}.kv b{color:var(--text)}
 
+/* community */
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+.comm-card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid var(--border);border-radius:22px;padding:34px 28px;text-align:center;transition:.3s;position:relative;overflow:hidden}
+.comm-card::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(52,211,153,.55),transparent)}
+.comm-card:hover{transform:translateY(-5px);border-color:var(--border2);box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.comm-logo{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 12px 34px rgba(139,92,246,.45);border:3px solid rgba(255,255,255,.15)}
+.comm-card h3{font-family:var(--font-d);font-size:21px;margin-bottom:4px}
+.comm-card .csub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.cticks{list-style:none;text-align:left;max-width:280px;margin:0 auto 24px;display:flex;flex-direction:column;gap:10px}
+.cticks li{color:var(--muted);font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.cticks li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0}
+.join-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#34d399,#059669);color:#fff;font-weight:800;font-size:14px;letter-spacing:1px;text-decoration:none;padding:14px 44px;border-radius:14px;box-shadow:0 10px 28px rgba(5,150,105,.4);transition:.2s;width:100%}
+.join-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(5,150,105,.55)}
+.ph-note{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;background:rgba(251,191,36,.06);border:1px dashed rgba(251,191,36,.35);border-radius:12px;padding:12px}
+
 /* faq */
 .faq{border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(4,8,18,.4);transition:border-color .25s}
 .faq:hover{border-color:var(--border2)}
@@ -151,8 +219,20 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 
 /* footer */
-footer{border-top:1px solid var(--border);padding:36px 0;margin-top:26px;text-align:center;color:var(--muted);font-size:13px;position:relative;z-index:2}
-footer .flogo{font-family:var(--font-d);font-weight:700;font-size:17px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+footer{background:#02040a;border-top:1px solid var(--border);padding:52px 0 30px;margin-top:40px;position:relative;z-index:2}
+.foot-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:34px;margin-bottom:34px}
+.flogo{font-family:var(--font-d);font-weight:700;font-size:21px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.ftag{color:var(--muted);font-size:13.5px;max-width:280px}
+.fhead{font-size:11.5px;font-weight:800;letter-spacing:2px;color:var(--muted);margin-bottom:16px}
+.flinks{display:flex;flex-direction:column;gap:10px}
+.flinks a{color:var(--muted);text-decoration:none;font-size:14px;transition:.2s}
+.flinks a:hover{color:var(--text)}
+.portal-btns{display:flex;flex-direction:column;gap:10px}
+.portal-btns .btn{width:100%}
+.flegal{border-top:1px solid var(--border);padding-top:20px;color:var(--muted);font-size:12.5px;text-align:center}
+.fcopy{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+.fcopy b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
 .note{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.3);color:#fde68a;border-radius:14px;padding:14px 18px;font-size:13px;margin-top:18px;line-height:1.6}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:rgba(255,255,255,.09);outline:none;margin:10px 0;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--grad);box-shadow:0 4px 14px rgba(139,92,246,.6);cursor:grab;border:2px solid rgba(255,255,255,.25)}
@@ -169,15 +249,19 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 @media(max-width:860px){
   .row{grid-template-columns:1fr}
   .grid2{grid-template-columns:1fr}
-  nav{display:none}
+  nav.dnav{display:none}
+  .menu-btn{display:block}
   .hero{padding:60px 0 32px}
   .card{padding:24px 20px}
   #lib{grid-template-columns:1fr}
-  .stats{gap:8px}
-  .stat{padding:8px 14px;font-size:12.5px}
+  .vault{grid-template-columns:1fr}
+  .comm-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .addkey-row{grid-template-columns:1fr}
+  #modePills{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){
-  .orb,.drop .big,.badge .dot,.prog i::after{animation:none}
+  .orb,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
@@ -189,74 +273,174 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <header><div class="container hd">
   <div class="logo">PromptForge</div>
-  <nav><a href="#keys">API Keys</a><a href="#analyzer">Analyzer</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#faq">FAQ</a></nav>
+  <nav class="dnav"><a href="#analyzer">Analyzer</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#community">Community</a><a href="#faq">FAQ</a></nav>
+  <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
 </div></header>
+
+<div class="scrim" id="scrim" onclick="closeMenu()"></div>
+<aside class="drawer" id="drawer">
+  <button class="dclose" onclick="closeMenu()" aria-label="Close menu">✕</button>
+  <nav>
+    <a href="#analyzer" onclick="closeMenu()">🎬 Analyzer</a>
+    <a href="#lab" onclick="closeMenu()">🧪 Prompt Lab</a>
+    <a href="#library" onclick="closeMenu()">📚 Library</a>
+    <a href="#community" onclick="closeMenu()">👥 Community</a>
+    <a href="#faq" onclick="closeMenu()">❓ FAQ</a>
+  </nav>
+  <a class="api-settings-btn" href="#keys" onclick="closeMenu()">⚙ API Settings</a>
+  <div class="dfoot">PromptForge — free &amp; open</div>
+</aside>
 
 <div class="container">
 
 <div class="hero reveal">
   <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
-  <h1>Turn Any Media Into <span>Production AI Prompts</span></h1>
+  <h1>Turn Any Media Into<br><span class="typeblue" id="typeLine"></span><span class="caret">|</span></h1>
   <p class="lead">Drop a video or image — get a ready-to-generate prompt for Veo, Midjourney, Flux &amp; more, plus stock-ready title, keywords &amp; category metadata. Everything runs in your browser.</p>
-  <div class="stats">
-    <div class="stat"><span class="ic">🔒</span>100% client-side</div>
-    <div class="stat"><span class="ic">🤖</span>3 AI providers</div>
-    <div class="stat"><span class="ic">📊</span>Stock CSV export</div>
+  <div class="qchips">
+    <button class="qchip" onclick="quickTarget('Veo 3')">🎬 Veo 3</button>
+    <button class="qchip" onclick="quickTarget('Midjourney')">🎨 Midjourney</button>
+    <button class="qchip" onclick="quickTarget('Flux')">⚡ Flux</button>
+    <button class="qchip" onclick="quickTarget('Seedance')">🌊 Seedance</button>
   </div>
 </div>
 
-<!-- API KEYS -->
+<!-- API KEYS VAULT -->
 <section id="keys"><div class="card reveal">
-  <div class="eyebrow">SETUP</div>
-  <h2>API Keys</h2>
-  <p class="sub">Add at least one key to begin. Keys are stored only in your browser (localStorage) — never sent anywhere except the AI provider you choose. <b>Pro tip:</b> paste multiple keys separated by commas — PromptForge rotates between them and auto-skips any key that hits a rate limit.</p>
-  <div class="row">
-    <div><label class="lbl">Google Gemini</label><div class="keywrap"><input type="password" id="k_gemini" placeholder="AIza... , AIza... (comma-separated)" autocomplete="off"><span class="st no" id="s_gemini">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
-    <div><label class="lbl">Groq</label><div class="keywrap"><input type="password" id="k_groq" placeholder="gsk_... , gsk_... (comma-separated)" autocomplete="off"><span class="st no" id="s_groq">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
-    <div><label class="lbl">OpenRouter</label><div class="keywrap"><input type="password" id="k_openrouter" placeholder="sk-or-... (comma-separated)" autocomplete="off"><span class="st no" id="s_openrouter">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
+  <div class="cardhead">
+    <div><div class="eyebrow">SETUP</div><h2>🔑 API Keys</h2></div>
+    <div class="countbadges" id="headBadges">GEMINI: 0/3 · GROQ: 0/2 · OPENROUTER: 0/1</div>
+  </div>
+  <p class="sub">Add at least one key to begin. Keys are stored only in your browser (localStorage) — never sent anywhere except the AI provider you choose.</p>
+
+  <label class="lbl">Add API key</label>
+  <p class="sub" style="margin-bottom:10px">Add multiple keys per provider — PromptForge auto-rotates between them on rate limits.</p>
+  <div class="addkey-row">
+    <input type="password" id="keyInput" placeholder="Paste key here (AIza… / gsk_… / sk-or-…)" autocomplete="off">
+    <select id="keyProv">
+      <option value="auto">Auto Detect</option>
+      <option value="gemini">Gemini</option>
+      <option value="groq">Groq</option>
+      <option value="openrouter">OpenRouter</option>
+    </select>
+    <button class="btn sm bluebtn" onclick="addKey()">+ Add Key</button>
   </div>
   <div class="btnrow">
-    <button class="btn sm" onclick="saveKeys()">Save keys</button>
+    <button class="btn sm ghost" onclick="document.getElementById('keyfile').click()">⬆ Import CSV</button>
+    <button class="btn sm ghost" onclick="exportKeysCSV()">⬇ Export CSV</button>
     <button class="btn sm ghost" onclick="clearKeys()">Clear all</button>
+    <input type="file" id="keyfile" hidden accept=".csv" onchange="importKeysCSV()">
   </div>
+
+  <div class="vault">
+    <div class="vsub">
+      <div class="vhead"><span>⚡ GEMINI KEYS</span><span class="st no" id="s_gemini">0/3</span></div>
+      <div id="list_gemini"></div>
+      <a class="keylink" href="https://aistudio.google.com" target="_blank" rel="noopener">Get Gemini Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://aistudio.google.com','_blank')">Get Free Gemini API Key</button>
+    </div>
+    <div class="vsub">
+      <div class="vhead"><span>🚀 GROQ KEYS</span><span class="st no" id="s_groq">0/2</span></div>
+      <div id="list_groq"></div>
+      <a class="keylink" href="https://groq.com" target="_blank" rel="noopener">Get Groq Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://groq.com','_blank')">Get Free Groq API Key</button>
+    </div>
+    <div class="vsub">
+      <div class="vhead"><span>🌐 OPENROUTER KEYS</span><span class="st no" id="s_openrouter">0/1</span></div>
+      <div id="list_openrouter"></div>
+      <a class="keylink" href="https://openrouter.ai" target="_blank" rel="noopener">Get OpenRouter Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://openrouter.ai','_blank')">Get Free OpenRouter API Key</button>
+    </div>
+  </div>
+
+  <!-- legacy hidden inputs kept for compatibility -->
+  <input type="hidden" id="k_gemini"><input type="hidden" id="k_groq"><input type="hidden" id="k_openrouter">
+
   <div class="note">💡 Free tiers: get a Gemini key at <b>Google AI Studio</b> (aistudio.google.com) and a Groq key at <b>groq.com</b>. Only Gemini reads real video motion — other providers analyze sampled keyframes.</div>
 </div></section>
 
-<!-- ANALYZER -->
-<section id="analyzer"><div class="card reveal">
-  <div class="eyebrow">ANALYZE</div>
-  <h2>Media Analyzer</h2>
-  <p class="sub">Upload videos or images — get production prompts + stock metadata.</p>
+<!-- SETTINGS -->
+<section id="settings"><div class="card reveal">
+  <div class="cardhead">
+    <div><div class="eyebrow">ANALYSIS</div><h2>Settings</h2></div>
+    <span class="syspill warn" id="sysPill">● ADD API KEY</span>
+  </div>
+  <p class="sub">Tune every analysis. Keys rotate automatically when a provider hits its quota.</p>
+
+  <label class="lbl">Target generator preset</label>
+  <select id="target"><option>Veo 3</option><option>Midjourney</option><option>Flux</option><option>Seedance</option><option>General purpose</option></select>
+  <div class="flavornote" id="flavorNote">Metadata flavor: Adobe Stock</div>
+
   <label class="lbl">Mode</label>
   <div class="pills" id="modePills">
-    <div class="pill on" data-v="video">🎬 Video to Prompt</div>
-    <div class="pill" data-v="image">🖼️ Image to Prompt</div>
-    <div class="pill" data-v="meta">🏷️ Metadata Only</div>
+    <div class="pill on" data-v="video">🎬 VIDEO TO PROMPT</div>
+    <div class="pill" data-v="image">🖼️ IMAGE TO PROMPT</div>
+    <div class="pill" data-v="meta">🏷️ METADATA ONLY</div>
+    <div class="pill" data-v="lab">🧪 PROMPT LAB</div>
   </div>
+
+  <label class="lbl">Preset</label>
+  <div class="chips" id="presetPills">
+    <div class="chip on" data-v="veo3">VEO 3</div>
+    <div class="chip" data-v="adobe">ADOBE STOCK</div>
+    <div class="chip" data-v="muse">MUSE</div>
+    <div class="chip" data-v="seedance">SEEDANCE</div>
+  </div>
+
+  <label class="lbl">Duration</label>
+  <div class="chips" id="durPills">
+    <div class="chip on" data-v="15s">15S</div>
+    <div class="chip" data-v="30s">30S</div>
+    <div class="chip" data-v="60s">60S+</div>
+  </div>
+
   <label class="lbl">Style</label>
-  <div class="pills" id="stylePills">
+  <div class="pills" id="stylePills" style="margin-bottom:12px">
     <div class="pill on" data-v="recreate">Recreate — rebuild this exact asset</div>
     <div class="pill" data-v="inspire">Inspire — new scene in this style</div>
   </div>
-  <div class="grid2">
-    <div><label class="lbl">Target generator</label>
-      <select id="target"><option>Veo 3</option><option>Midjourney</option><option>Flux</option><option>Seedance</option><option>General purpose</option></select></div>
-    <div><label class="lbl">AI provider</label>
-      <select id="provider"><option value="auto">Auto (first available)</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option></select></div>
+  <div class="artgrid" id="artPills">
+    <div class="apill" data-v="ghibli">GHIBLI</div>
+    <div class="apill" data-v="anime">ANIME</div>
+    <div class="apill" data-v="pixar">PIXAR</div>
+    <div class="apill" data-v="cinematic">CINEMATIC</div>
+    <div class="apill" data-v="claymation">CLAYMATION</div>
+    <div class="apill" data-v="oil">OIL PAINTING</div>
+    <div class="apill" data-v="cyberpunk">CYBERPUNK</div>
+    <div class="apill" data-v="lego">LEGO</div>
+    <div class="apill" data-v="pixel">PIXEL ART</div>
+    <div class="apill" data-v="darkfantasy">DARK FANTASY</div>
+    <div class="apill" data-v="flatvector">FLAT VECTOR</div>
   </div>
-  <div class="grid2">
-    <div><label class="lbl">Gemini model</label>
-      <select id="gmodel"><option>gemini-2.0-flash</option><option>gemini-2.0-flash-lite</option><option>gemini-1.5-pro</option></select></div>
-    <div></div>
+  <div class="flavornote">Tap an art style again to deselect. Selected style is woven into every generated prompt.</div>
+</div></section>
+<!-- UPLOAD / ANALYZER -->
+<section id="analyzer"><div class="card reveal">
+  <div class="eyebrow">ANALYZE</div>
+  <h2>Upload &amp; Analyze</h2>
+  <p class="sub">Queue up files — PromptForge processes them one at a time to stay under free-tier limits.</p>
+  <div class="drop" id="drop">
+    <div class="big">📁</div>
+    <div class="dz-title">Upload Stock Videos</div>
+    <p>Drag &amp; drop files here, or drag a picture straight off any website — as many as you like.</p>
+    <div class="fmtchips"><span class="fmt">MP4</span><span class="fmt">WEBM</span><span class="fmt">MOV</span><span class="fmt">M4V</span><span class="fmt">MKV</span><span class="fmt">AVI</span><span class="fmt">PNG</span><span class="fmt">JPG</span></div>
+    <input type="file" id="filein" hidden multiple accept="video/*,image/*">
   </div>
-  <label class="lbl">Files</label>
-  <div class="drop" id="drop"><div class="big">📁</div><p><b>Drop videos / images here</b> or click to browse<br>Multiple files queue up — processed one at a time</p>
-    <input type="file" id="filein" hidden multiple accept="video/*,image/*"></div>
+  <div class="divider" id="keyDivider"><span>ADD AN API KEY TO GET STARTED</span></div>
   <div class="queue" id="queue"></div>
-  <div class="btnrow"><button class="btn" id="analyzeBtn" onclick="runQueue()" disabled>⚡ Analyze queue</button>
-  <button class="btn ghost" onclick="clearQueue()">Clear queue</button></div>
+  <div class="btnrow">
+    <button class="btn bluebtn" id="analyzeBtn" onclick="runQueue()" disabled>⚡ Analyze</button>
+    <button class="btn ghost" onclick="fullReport()">📄 FULL ANALYSIS REPORT</button>
+    <button class="btn ghost" onclick="clearQueue()">Clear queue</button>
+  </div>
   <div class="prog" id="prog"><i id="progbar"></i></div>
   <div class="status" id="status"></div>
+  <div class="grid2" style="margin-top:8px">
+    <div><label class="lbl">AI provider</label>
+      <select id="provider"><option value="auto">Auto (first available)</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option></select></div>
+    <div><label class="lbl">Gemini model</label>
+      <select id="gmodel"><option>gemini-2.0-flash</option><option>gemini-2.0-flash-lite</option><option>gemini-1.5-pro</option></select></div>
+  </div>
 </div></section>
 
 <!-- PROMPT LAB -->
@@ -273,22 +457,56 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <textarea id="labin" placeholder="Type a rough idea, or paste an existing prompt..."></textarea>
   <div id="variWrap" style="display:none"><label class="lbl">Variations: <span id="variN">4</span></label>
     <input type="range" id="variCount" min="2" max="10" value="4" oninput="document.getElementById('variN').textContent=this.value"></div>
-  <div class="btnrow"><button class="btn" id="labBtn" onclick="runLab()" disabled>⚡ Generate</button></div>
+  <div class="btnrow"><button class="btn bluebtn" id="labBtn" onclick="runLab()" disabled>⚡ Generate</button></div>
   <div class="status" id="labstatus"></div>
   <div id="labout"></div>
 </div></section>
 
-<!-- LIBRARY -->
+<!-- LIBRARY / RESULTS -->
 <section id="library"><div class="card reveal">
-  <div class="eyebrow">COLLECTION</div>
-  <h2>Results Library</h2>
+  <div class="cardhead">
+    <div><div class="eyebrow">COLLECTION</div><h2>Results</h2></div>
+  </div>
   <p class="sub">Every analysis lands here. Edit, copy or export.</p>
   <div class="btnrow">
-    <button class="btn sm ghost" onclick="exportCSV('adobe')">⬇ Export Adobe Stock CSV</button>
-    <button class="btn sm ghost" onclick="exportCSV('shutterstock')">⬇ Export Shutterstock CSV</button>
-    <button class="btn sm ghost" onclick="clearLib()">🗑 Clear library</button>
+    <button class="btn sm ghost" onclick="fullReport()">📄 Export as .txt</button>
+    <button class="btn sm ghost" onclick="exportCSV('adobe')">⬇ Adobe Stock CSV</button>
+    <button class="btn sm ghost" onclick="exportCSV('shutterstock')">⬇ Shutterstock CSV</button>
+    <button class="btn sm ghost" onclick="clearLib()">🗑 Clear All</button>
   </div>
   <div id="lib"><p class="sub" style="margin-top:14px">No results yet — analyze something above.</p></div>
+</div></section>
+
+<!-- COMMUNITY -->
+<section id="community"><div class="reveal">
+  <div class="eyebrow" style="text-align:center">COMMUNITY</div>
+  <h2 class="secttl">Join Our Official Networks &amp; Grow With Us</h2>
+  <p class="sub" style="text-align:center;max-width:620px;margin:0 auto">Connect with fellow creators — daily prompt drops, workflow guides and early access to new PromptForge features.</p>
+  <div class="comm-grid">
+    <div class="comm-card">
+      <div class="comm-logo">📣</div>
+      <h3>Your Channel #1</h3>
+      <p class="csub">AI prompts &amp; updates</p>
+      <ul class="cticks">
+        <li>Daily AI prompt drops &amp; ideas</li>
+        <li>New feature announcements first</li>
+        <li>Direct support from the community</li>
+      </ul>
+      <a class="join-btn" href="#">JOIN NOW</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-logo">🚀</div>
+      <h3>Your Channel #2</h3>
+      <p class="csub">Creator growth hub</p>
+      <ul class="cticks">
+        <li>Step-by-step workflow guides</li>
+        <li>Stock-selling tips &amp; strategies</li>
+        <li>Early beta access to new tools</li>
+      </ul>
+      <a class="join-btn" href="#">JOIN NOW</a>
+    </div>
+  </div>
+  <div class="ph-note">🔧 Placeholder cards — paste your real WhatsApp / community links into the two JOIN NOW buttons above.</div>
 </div></section>
 
 <!-- FAQ -->
@@ -299,13 +517,43 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <details class="faq"><q>Is my media uploaded anywhere?</q><div class="a">No. Files are processed in your browser. The only network call containing your media goes to the AI provider whose key you added (Gemini, Groq or OpenRouter). There is no PromptForge server.</div></details>
   <details class="faq"><q>Which provider should I use?</q><div class="a">Gemini is the best all-rounder — it's the only one that reads actual video motion. Groq and OpenRouter work from sampled keyframes for video, but are equally capable for images. All have free tiers.</div></details>
   <details class="faq"><q>Recreate vs Inspire — what's the difference?</q><div class="a"><b>Recreate</b> reverse-engineers the exact asset into a prompt that rebuilds it. <b>Inspire</b> studies only the style — mood, palette, lighting, camera language — and writes a prompt for a brand-new original scene in that style, never naming artists or copying the original.</div></details>
-  <details class="faq"><q>Can I add more than one API key?</q><div class="a">Yes — paste several keys separated by commas in any provider field. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
+  <details class="faq"><q>Can I add more than one API key?</q><div class="a">Yes — add as many keys per provider as you like with the "+ Add Key" button. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
   <details class="faq"><q>Can I process many files at once?</q><div class="a">Yes. Drop multiple files and they queue up; PromptForge runs them one at a time to stay under free-tier rate limits, and every result lands in your library as its own card.</div></details>
   <details class="faq"><q>Is PromptForge free?</q><div class="a">Yes. The app itself is free and open — you bring your own API key from a provider with a free tier. PromptForge never asks for payment or an account.</div></details>
 </div></section>
 </div>
 
-<footer><div class="flogo">PromptForge</div>Free &amp; open. Your keys stay in your browser.</footer>
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="flogo">PromptForge</div>
+        <p class="ftag">Free AI prompt reverse-engineer. Turn any media into production-ready prompts — your keys never leave your browser.</p>
+      </div>
+      <div>
+        <div class="fhead">QUICK NAVIGATION</div>
+        <div class="flinks">
+          <a href="#keys">API Keys</a>
+          <a href="#analyzer">Analyzer</a>
+          <a href="#lab">Prompt Lab</a>
+          <a href="#library">Library</a>
+          <a href="#community">Community</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <div class="fhead">FREE API PORTALS</div>
+        <div class="portal-btns">
+          <a class="btn sm bluebtn" href="https://aistudio.google.com" target="_blank" rel="noopener">GET GEMINI API KEY</a>
+          <a class="btn sm ghost" href="https://groq.com" target="_blank" rel="noopener">GET GROQ API KEY</a>
+          <a class="btn sm ghost" href="https://openrouter.ai" target="_blank" rel="noopener">OPENROUTER API KEY</a>
+        </div>
+      </div>
+    </div>
+    <div class="flegal">Keys are stored only in your browser's localStorage. Media is sent only to the AI provider you choose — there is no PromptForge server.</div>
+    <div class="fcopy">© 2026 <b>PromptForge</b> — free &amp; open.</div>
+  </div>
+</footer>
 <div id="toast"></div>
 <script>
 /* ============ helpers & state ============ */
@@ -315,26 +563,132 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 function setStatus(t){$('status').textContent=t||''}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
 function pillWire(id,cb){const el=$(id);el.querySelectorAll('.pill').forEach(p=>p.onclick=()=>{el.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');cb&&cb(p.dataset.v)});}
-let MODE='video',STYLE='recreate',LAB='enhance';
-pillWire('modePills',v=>MODE=v);pillWire('stylePills',v=>STYLE=v);
+let MODE='video',STYLE='recreate',LAB='enhance',PRESET='veo3',METAFLAVOR='adobe',DURATION='15s',STYLE_SEL=null;
+pillWire('modePills',v=>{
+  if(v==='lab'){document.getElementById('lab').scrollIntoView({behavior:'smooth'});
+    document.querySelectorAll('#modePills .pill').forEach(x=>x.classList.toggle('on',x.dataset.v===MODE));return}
+  MODE=v;
+});
+pillWire('stylePills',v=>STYLE=v);
 pillWire('labPills',v=>{LAB=v;$('variWrap').style.display=v==='vari'?'block':'none';});
+const PRESETMAP={veo3:{t:'Veo 3',f:'adobe'},adobe:{t:'General purpose',f:'adobe'},muse:{t:'Midjourney',f:'shutterstock'},seedance:{t:'Seedance',f:'adobe'}};
+pillWire('presetPills',v=>{PRESET=v;const m=PRESETMAP[v];$('target').value=m.t;METAFLAVOR=m.f;
+  $('flavorNote').textContent='Metadata flavor: '+(m.f==='adobe'?'Adobe Stock':'Shutterstock');
+  toast('Preset: '+v.toUpperCase()+' ✓')});
+pillWire('durPills',v=>{DURATION=v});
+document.querySelectorAll('#artPills .apill').forEach(p=>p.onclick=()=>{
+  const was=p.classList.contains('on');
+  document.querySelectorAll('#artPills .apill').forEach(x=>x.classList.remove('on'));
+  STYLE_SEL=was?null:p.dataset.v;
+  if(!was)p.classList.add('on');
+  toast(was?'Art style cleared':('Style: '+p.textContent+' ✓'));
+});
+const STYLE_MAP={
+  ghibli:'hand-drawn anime aesthetic, lush painterly backgrounds, soft warm light, whimsical hand-crafted detail',
+  anime:'bold anime illustration style, clean linework, vibrant cel shading, dynamic stylized composition',
+  pixar:'3D animated film look, soft subsurface scattering, big appealing shapes, warm family-film lighting',
+  cinematic:'cinematic film-still look, dramatic motivated lighting, shallow depth of field, rich color grade',
+  claymation:'handmade claymation look, fingerprint-textured stop-motion models, tactile miniature sets, soft studio light',
+  oil:'classical oil painting aesthetic, visible expressive brushstrokes, rich impasto texture, museum lighting',
+  cyberpunk:'neon-drenched futuristic city aesthetic, high-contrast rim lighting, rain-slicked streets, holographic glow',
+  lego:'LEGO brick-built miniature world, glossy plastic studs, playful toy-photography lighting, tiny depth of field',
+  pixel:'retro pixel-art style, crisp 16-bit sprites, limited color palette, nostalgic arcade-game aesthetic',
+  darkfantasy:'dark fantasy aesthetic, moody volumetric fog, ancient crumbling ruins, dramatic chiaroscuro lighting',
+  flatvector:'flat vector illustration, clean geometric shapes, bold solid colors, minimal modern graphic design'
+};
+function quickTarget(t){$('target').value=t;document.getElementById('analyzer').scrollIntoView({behavior:'smooth'});toast('Target: '+t+' ✓')}
 
-/* ============ multi-key support: comma-separated keys, round-robin rotation, 429 cooldown ============ */
+/* ============ slide-in menu ============ */
+function toggleMenu(){$('drawer').classList.add('open');$('scrim').classList.add('show')}
+function closeMenu(){$('drawer').classList.remove('open');$('scrim').classList.remove('show')}
+
+/* ============ hero typing effect ============ */
+(function(){
+  const PH=['Veo 3 prompts…','Midjourney prompts…','Flux prompts…','stock metadata…'];
+  const el=$('typeLine');let pi=0,ci=0,del=false;
+  (function tick(){
+    const word=PH[pi];
+    el.textContent=word.slice(0,ci);
+    if(!del){ci++;if(ci>word.length){del=true;return void setTimeout(tick,1400)}setTimeout(tick,75)}
+    else{ci--;if(ci<0){del=false;pi=(pi+1)%PH.length;ci=0;setTimeout(tick,350);return}setTimeout(tick,38)}
+  })();
+})();
+
+/* ============ multi-key vault: comma-joined arrays, round-robin rotation, 429 cooldown ============ */
 function getKeys(p){return (localStorage.getItem('pf_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean)}
 const K={get gemini(){return getKeys('gemini')},get groq(){return getKeys('groq')},get openrouter(){return getKeys('openrouter')}};
-const RR={gemini:0,groq:0,openrouter:0};   /* round-robin cursors */
-const COOL={};                              /* key -> timestamp when cooldown ends */
-function refreshKeys(){
-  $('k_gemini').value=localStorage.getItem('pf_gemini')||'';
-  $('k_groq').value=localStorage.getItem('pf_groq')||'';
-  $('k_openrouter').value=localStorage.getItem('pf_openrouter')||'';
-  const set=(id,n)=>{const e=$(id);e.textContent=n?n+' KEY'+(n>1?'S':''):'MISSING';e.className='st '+(n?'ok':'no')};
-  const cg=getKeys('gemini').length,cq=getKeys('groq').length,co=getKeys('openrouter').length;
-  set('s_gemini',cg);set('s_groq',cq);set('s_openrouter',co);
-  const any=!!(cg+cq+co);
-  $('analyzeBtn').disabled=!any;$('labBtn').disabled=!any;
+const RR={gemini:0,groq:0,openrouter:0};
+const COOL={};
+function maskKey(k){return k.length<=10?'••••••':k.slice(0,4)+'…'+k.slice(-4)}
+function renderVault(){
+  const caps={gemini:3,groq:2,openrouter:1};
+  ['gemini','groq','openrouter'].forEach(p=>{
+    const keys=getKeys(p),listEl=$('list_'+p);
+    if(!keys.length){listEl.innerHTML='<div class="empty-dash">No keys yet — add one above or grab a free key below.</div>';return}
+    listEl.innerHTML=keys.map((k,i)=>`<div class="keyrow"><span class="kmono">${esc(maskKey(k))}</span><button class="krm" onclick="removeKey('${p}',${i})" title="Remove key">×</button></div>`).join('');
+  });
 }
-function saveKeys(){localStorage.setItem('pf_gemini',$('k_gemini').value.trim());localStorage.setItem('pf_groq',$('k_groq').value.trim());localStorage.setItem('pf_openrouter',$('k_openrouter').value.trim());refreshKeys();setStatus('Keys saved in this browser.');toast('Keys saved ✓')}
+function detectProv(k,sel){
+  if(/^AIza/.test(k))return 'gemini';
+  if(/^gsk_/.test(k))return 'groq';
+  if(/^sk-or-/.test(k))return 'openrouter';
+  return sel;
+}
+function addKey(){
+  const raw=$('keyInput').value.trim();
+  if(!raw){toast('Paste a key first');return}
+  const sel=$('keyProv').value;
+  let added=0,undetected=false;
+  raw.split(',').map(s=>s.trim()).filter(Boolean).forEach(k=>{
+    const p=detectProv(k,sel);
+    if(p==='auto'){undetected=true;return}
+    const cur=getKeys(p);
+    if(!cur.includes(k)){cur.push(k);localStorage.setItem('pf_'+p,cur.join(','));added++}
+  });
+  if(undetected)toast('Provider not detected — pick one from the dropdown');
+  $('keyInput').value='';
+  refreshKeys();
+  toast(added?added+' key'+(added>1?'s':'')+' added ✓':'Key already saved');
+}
+function removeKey(p,i){
+  const cur=getKeys(p);cur.splice(i,1);
+  localStorage.setItem('pf_'+p,cur.join(','));
+  refreshKeys();toast('Key removed');
+}
+function exportKeysCSV(){
+  const rows=['provider,key'];
+  ['gemini','groq','openrouter'].forEach(p=>getKeys(p).forEach(k=>rows.push(p+','+k)));
+  if(rows.length===1){toast('No keys to export');return}
+  download('promptforge_keys_backup.csv',rows.join('\n'));toast('Keys exported ✓');
+}
+function importKeysCSV(){
+  const f=$('keyfile').files[0];if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    String(fr.result).split(/\r?\n/).forEach(line=>{
+      const m=line.trim().match(/^(gemini|groq|openrouter)\s*,\s*(.+)$/i);
+      if(m){const p=m[1].toLowerCase(),k=m[2].trim();const cur=getKeys(p);
+        if(k&&!cur.includes(k)){cur.push(k);localStorage.setItem('pf_'+p,cur.join(','))}}
+    });
+    $('keyfile').value='';refreshKeys();toast('Keys imported ✓');
+  };
+  fr.readAsText(f);
+}
+function refreshKeys(){
+  const cg=getKeys('gemini'),cq=getKeys('groq'),co=getKeys('openrouter');
+  $('k_gemini').value=cg.join(',');$('k_groq').value=cq.join(',');$('k_openrouter').value=co.join(',');
+  const set=(id,n,cap)=>{const e=$(id);e.textContent=n+'/'+cap;e.className='st '+(n?'ok':'no')};
+  set('s_gemini',cg.length,3);set('s_groq',cq.length,2);set('s_openrouter',co.length,1);
+  const any=!!(cg.length+cq.length+co.length);
+  $('analyzeBtn').disabled=!any;$('labBtn').disabled=!any;
+  const sp=$('sysPill');
+  if(any){sp.textContent='● SYSTEM READY';sp.className='syspill ok'}
+  else{sp.textContent='● ADD API KEY';sp.className='syspill warn'}
+  $('keyDivider').style.display=any?'none':'flex';
+  $('headBadges').textContent=`GEMINI: ${cg.length}/3 · GROQ: ${cq.length}/2 · OPENROUTER: ${co.length}/1`;
+  renderVault();
+}
+function saveKeys(){refreshKeys();setStatus('Keys saved in this browser.');toast('Keys saved ✓')}
 function clearKeys(){['pf_gemini','pf_groq','pf_openrouter'].forEach(k=>localStorage.removeItem(k));refreshKeys();setStatus('Keys cleared.');}
 /* returns {provider, key} — next healthy key in round-robin order */
 function pickProvider(want){
@@ -415,6 +769,13 @@ function baseRules(target){
   return `Target generator: ${target}. Write camera language (shot type, lens feel, angle, movement for video), lighting, color palette, composition, mood/atmosphere, subject detail, environment, style descriptors native to ${target}. Never name real artists, brands, or watermarked sources.`;
 }
 function jsonAsk(){return `Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"prompt":"...","title":"...","keywords":["..."],"category":"...","description":"..."}`}
+function styleNote(){return (STYLE_SEL&&STYLE_MAP[STYLE_SEL])?` Artistic style direction: ${STYLE_MAP[STYLE_SEL]}.` : ''}
+function durNote(kind){
+  if(kind!=='video')return '';
+  if(DURATION==='15s')return ' Pacing: designed as a tight 15-second spot — punchy, fast cuts.';
+  if(DURATION==='30s')return ' Pacing: designed as a 30-second commercial — clear three-beat structure.';
+  return ' Pacing: designed as a 60-second+ cinematic piece — slow build, breathing room.';
+}
 function buildAnalyze(kind,target,style){
   const rec=style==='recreate'
     ?'RECREATE: reverse-engineer the EXACT asset into a prompt that rebuilds it faithfully.'
@@ -422,12 +783,12 @@ function buildAnalyze(kind,target,style){
   const kw=kind==='meta'
     ?'Skip the creative prompt (set "prompt" to an empty string). Focus on stock metadata: commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names; description one sentence; category one of: '+CATS.join(', ')+'.'
     :'Also produce stock metadata: commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names; one-sentence description; category one of: '+CATS.join(', ')+'.';
-  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}. ${rec} ${baseRules(target)} ${kw} ${jsonAsk()}`;
+  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)} ${kw} ${jsonAsk()}`;
 }
 function buildLab(tool,target,input,n){
-  if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}. ${baseRules(target)} Return ONLY valid JSON: {"prompt":"..."}\nIdea: ${input}`;
+  if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} Return ONLY valid JSON: {"prompt":"..."}\nIdea: ${input}`;
   if(tool==='p2m')return `You are a stock-metadata expert. From the prompt below infer stock-upload metadata. Commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names, one-sentence description, category one of: ${CATS.join(', ')}. Return ONLY valid JSON: {"title":"...","keywords":["..."],"category":"...","description":"..."}\nPrompt: ${input}`;
-  return `You are a prompt engineer. Write ${n} distinct variations of the prompt below for ${target} — same quality bar, different angles/subjects/moods. Return ONLY valid JSON: {"variations":["..."]}\nPrompt: ${input}`;
+  return `You are a prompt engineer. Write ${n} distinct variations of the prompt below for ${target} — same quality bar, different angles/subjects/moods.${styleNote()} Return ONLY valid JSON: {"variations":["..."]}\nPrompt: ${input}`;
 }
 function parseJSON(t){
   let s=t.trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
@@ -485,7 +846,7 @@ async function analyzeOne(q,sel){
     return s.provider==='groq'?await callGroq(msgs,s.key):await callOR(msgs,s.key);
   });
   const d=parseJSON(text);
-  saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:STYLE,prov:sel.provider,
+  saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE,prov:sel.provider,
     prompt:d.prompt||'',title:d.title||q.file.name,keywords:Array.isArray(d.keywords)?d.keywords:[],category:d.category||'',description:d.description||'',ts:Date.now()});
 }
 async function buildVisionMessages(q,instr,prov){
@@ -559,7 +920,7 @@ function copyLP(i){const t=$('lp'+i);navigator.clipboard.writeText(t?t.value:LIB
 function delR(i){LIB.splice(i,1);persistLib();renderLib()}
 function clearLib(){if(confirm('Clear all results?')){LIB=[];persistLib();renderLib()}}
 
-/* ============ CSV export ============ */
+/* ============ CSV / TXT export ============ */
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click()}
 function exportCSV(kind){
@@ -575,6 +936,12 @@ function exportCSV(kind){
     download('promptforge_shutterstock.csv',rows.join('\n'));
   }
   toast('CSV downloaded ✓');
+}
+function fullReport(){
+  if(!LIB.length){toast('Library is empty — analyze something first.');return}
+  const txt=LIB.map((r,i)=>`===== RESULT ${i+1} =====\nTitle: ${r.title}\nFile: ${r.file}\nTarget: ${r.target} · Style: ${r.style} · via ${r.prov}\n\nPROMPT:\n${r.prompt||'(none)'}\n\nKEYWORDS:\n${(r.keywords||[]).join(', ')}\n\nCATEGORY: ${r.category||'—'}\nDESCRIPTION: ${r.description||'—'}\n`).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download='promptforge_full_report.txt';a.click();
+  toast('Report downloaded ✓');
 }
 
 /* ============ init ============ */
