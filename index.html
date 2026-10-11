@@ -983,7 +983,7 @@ function detailRules(dur,unit){
   else if(n>0){words=Math.round(n/10*per10);label='EACH prompt'}
   else{words=200;label='EACH prompt'}
   const lo=Math.round(words*0.9),hi=Math.round(words*1.15);
-  const lenRule=`LENGTH — HARD REQUIREMENT, NOT A SUGGESTION:${n>0&&unit!=='scene'?` this video is ${n} seconds long.`:' '}` Write ${label} as ${lo}-${hi} words${n>0&&unit!=='scene'?` (about ${per10} words per 10 seconds)`:' '}. A shorter prompt is a FAILED response — keep adding concrete visible detail until you reach the count. Do not stop early, do not summarize to save space.`;
+  const lenRule=`LENGTH — HARD REQUIREMENT, NOT A SUGGESTION:${n>0&&unit!=='scene'?` this video is ${n} seconds long.`:' '} Write ${label} as ${lo}-${hi} words${n>0&&unit!=='scene'?` (about ${per10} words per 10 seconds)`:' '}. A shorter prompt is a FAILED response — keep adding concrete visible detail until you reach the count. Do not stop early, do not summarize to save space.`;
   return `${lenRule} Write DENSE shot-level visual detail, NOT a plot summary. Cover the video's story beats IN ORDER, giving EACH beat 2-3 dense sentences (setting + characters + exact actions + light). Name concrete visible things: hair style and color, wardrobe (fabric, color, embroidery, drape), exact physical actions (never "frantically collects" — say HOW: "unpegs damp shirts, clutching them to her chest as wind whips her hair"), set materials (mud-brick, thatch, clay, wood), weather textures, light quality and color temperature. Every clause must describe something a camera would see. Never use abstract summarizing verbs like "documents", "shifting indoors", "together they" — describe the visible shot.`;
 }
 function buildAnalyze(kind,target,style,dur){
