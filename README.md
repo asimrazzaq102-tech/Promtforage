@@ -1,1 +1,22 @@
-IyDimqEgUHJvbXB0Rm9yZ2UKCkZyZWUgQUkgcHJvbXB0IHJldmVyc2UtZW5naW5lZXIgdG9vbC4gVHVybiBhbnkgdmlkZW8gb3IgaW1hZ2UgaW50byBwcm9kdWN0aW9uLXJlYWR5IEFJIGdlbmVyYXRpb24gcHJvbXB0cyAoVmVvLCBNaWRqb3VybmV5LCBGbHV4LCBTZWVkYW5jZSkgcGx1cyBzdG9jay1yZWFkeSBtZXRhZGF0YSAodGl0bGUsIGtleXdvcmRzLCBjYXRlZ29yeSkgZm9yIEFkb2JlIFN0b2NrIC8gU2h1dHRlcnN0b2NrLgoKRXZlcnl0aGluZyBydW5zIGluIHlvdXIgYnJvd3NlciDigJQgYnJpbmcgeW91ciBvd24gQVBJIGtleSAoR2VtaW5pLCBHcm9xLCBvciBPcGVuUm91dGVyIOKAlCBhbGwgaGF2ZSBmcmVlIHRpZXJzKS4gTm8gc2VydmVyLCBubyBhY2NvdW50LCBubyB1cGxvYWQgb2YgeW91ciBtZWRpYSBhbnl3aGVyZSBleGNlcHQgdGhlIEFJIHByb3ZpZGVyIHlvdSBjaG9vc2UuCgojIyBGZWF0dXJlcwotICoqVmlkZW8gdG8gUHJvbXB0Kiog4oCUIEdlbWluaSByZWFkcyByZWFsIHZpZGVvIG1vdGlvbjsgb3RoZXIgcHJvdmlkZXJzIHVzZSBzYW1wbGVkIGtleWZyYW1lcwotICoqSW1hZ2UgdG8gUHJvbXB0Kiog4oCUIGZ1bGwgcHJvZHVjdGlvbiBwcm9tcHQgZnJvbSBhbnkgaW1hZ2UKLSAqKk1ldGFkYXRhIE9ubHkqKiDigJQgc3RvY2sgdGl0bGUsIGtleXdvcmRzLCBjYXRlZ29yeSwgZGVzY3JpcHRpb24KLSAqKlJlY3JlYXRlIC8gSW5zcGlyZSoqIHN0eWxlcwotICoqUHJvbXB0IExhYioqIOKAlCBFbmhhbmNlLCBQcm9tcHQg4oaSIE1ldGFkYXRhLCBWYXJpYXRpb25zICgy4oCTMTApCi0gKipSZXN1bHRzIExpYnJhcnkqKiDigJQgZWRpdCwgY29weSwgcGVyLWNhcmQgZXhwb3J0Ci0gKipDU1YgZXhwb3J0Kiog4oCUIEFkb2JlIFN0b2NrICYgU2h1dHRlcnN0b2NrIGZvcm1hdHMKLSBBUEkga2V5cyBzdG9yZWQgb25seSBpbiBicm93c2VyIGxvY2FsU3RvcmFnZQoKIyMgUnVuIGl0Ckp1c3Qgb3BlbiBgaW5kZXguaHRtbGAg4oCUIG9yIGhvc3QgaXQgZnJlZSBvbiBHaXRIdWIgUGFnZXMgKG5vIGJ1aWxkIHN0ZXAsIGl0J3MgYSBzaW5nbGUgZmlsZSkuCgojIyBHZXQgQVBJIGtleXMgKGZyZWUpCi0gR2VtaW5pOiBodHRwczovL2Fpc3R1ZGlvLmdvb2dsZS5jb20KLSBHcm9xOiBodHRwczovL2dyb3EuY29tCg==
+# ⚡ PromptForge
+
+Free AI prompt reverse-engineer tool. Turn any video or image into production-ready AI generation prompts (Veo, Midjourney, Flux, Seedance) plus stock-ready metadata (title, keywords, category) for Adobe Stock / Shutterstock.
+
+Everything runs in your browser — bring your own API key (Gemini, Groq, or OpenRouter — all have free tiers). No server, no account, no upload of your media anywhere except the AI provider you choose.
+
+## Features
+- **Video to Prompt** — Gemini reads real video motion; other providers use sampled keyframes
+- **Image to Prompt** — full production prompt from any image
+- **Metadata Only** — stock title, keywords, category, description
+- **Recreate / Inspire** styles
+- **Prompt Lab** — Enhance, Prompt → Metadata, Variations (2–10)
+- **Results Library** — edit, copy, per-card export
+- **CSV export** — Adobe Stock & Shutterstock formats
+- API keys stored only in browser localStorage
+
+## Run it
+Just open `index.html` — or host it free on GitHub Pages (no build step, it's a single file).
+
+## Get API keys (free)
+- Gemini: https://aistudio.google.com
+- Groq: https://groq.com
