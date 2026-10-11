@@ -181,6 +181,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .kmono{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--text)}
 .krm{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);cursor:pointer;font-size:15px;width:28px;height:28px;border-radius:8px;line-height:1}
 .krm:hover{background:rgba(248,113,113,.2)}
+.kstat{font-size:12px;white-space:nowrap;margin-left:auto;margin-right:10px}
 .empty-dash{border:1.5px dashed var(--border2);border-radius:12px;padding:20px 12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:4px}
 .keylink{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;text-decoration:none}
 .keylink:hover{text-decoration:underline}
@@ -791,13 +792,39 @@ function getKeys(p){return (localStorage.getItem('pf_'+p)||'').split(',').map(s=
 const K={get gemini(){return getKeys('gemini')},get groq(){return getKeys('groq')},get openrouter(){return getKeys('openrouter')}};
 const RR={gemini:0,groq:0,openrouter:0};
 const COOL={};
+/* per-key health stats (persisted): ok/fail counts + last state */
+const KSTAT=JSON.parse(localStorage.getItem('pf_kstat')||'{}');
+function kid(p,k){return p+'|'+k.slice(-8)}
+function kHit(p,k,st,msg){
+  const id=kid(p,k),s=KSTAT[id]||(KSTAT[id]={ok:0,fail:0});
+  if(st==='ok'){s.ok++;delete s.last}
+  else{s.fail++;s.last=st==='cool'?'rate-limited':st==='busy'?'busy':(msg||'failed').slice(0,50)}
+  s.ts=Date.now();
+  try{localStorage.setItem('pf_kstat',JSON.stringify(KSTAT))}catch(e){}
+  const el=document.getElementById('ks_'+id);
+  if(el)el.innerHTML=kStatHTML(p,k);
+}
+function kStatHTML(p,k){
+  const id=kid(p,k),s=KSTAT[id],now=Date.now();
+  if(COOL[k]&&COOL[k]>now)return `<span style="color:#fbbf24">⏳ cooling ${Math.ceil((COOL[k]-now)/1000)}s</span>`;
+  if(!s||(!s.ok&&!s.fail))return `<span style="color:#64748b">— idle</span>`;
+  const last=s.last?` <span style="color:#fbbf24">· ${esc(s.last)}</span>`:'';
+  return `<span style="color:#34d399">✓${s.ok}</span> <span style="color:#f87171">✗${s.fail}</span>${last}`;
+}
+setInterval(()=>{
+  document.querySelectorAll('.kstat').forEach(el=>{
+    const parts=el.id.slice(3).split('|');if(parts.length<2)return;
+    const k=getKeys(parts[0]).find(x=>x.slice(-8)===parts[1]);
+    if(k)el.innerHTML=kStatHTML(parts[0],k);
+  });
+},5000);
 function maskKey(k){return k.length<=10?'••••••':k.slice(0,4)+'…'+k.slice(-4)}
 function renderVault(){
   const caps={gemini:3,groq:2,openrouter:1};
   ['gemini','groq','openrouter'].forEach(p=>{
     const keys=getKeys(p),listEl=$('list_'+p);
     if(!keys.length){listEl.innerHTML='<div class="empty-dash">No keys yet — add one above or grab a free key below.</div>';return}
-    listEl.innerHTML=keys.map((k,i)=>`<div class="keyrow"><span class="kmono">${esc(maskKey(k))}</span><button class="krm" onclick="removeKey('${p}',${i})" title="Remove key">×</button></div>`).join('');
+    listEl.innerHTML=keys.map((k,i)=>`<div class="keyrow"><span class="kmono">${esc(maskKey(k))}</span><span class="kstat" id="ks_${p}|${k.slice(-8)}">${kStatHTML(p,k)}</span><button class="krm" onclick="removeKey('${p}',${i})" title="Remove key">×</button></div>`).join('');
   });
 }
 function detectProv(k,sel){
@@ -885,20 +912,22 @@ async function resilientCall(want,fn){
       throw new Error(anyKeys?'All keys are rate-limited right now. Wait a minute and retry.':'Add at least one API key first.');
     }
     const id=sel.provider+'|'+sel.key.slice(-8);
-    try{return await fn(sel)}
+    try{const r=await fn(sel);kHit(sel.provider,sel.key,'ok');return r}
     catch(e){
       const msg=e.message||'';
       if(/429|rate.?limit|RESOURCE_EXHAUSTED/i.test(msg)){
-        COOL[sel.key]=Date.now()+90000;
+        COOL[sel.key]=Date.now()+90000;kHit(sel.provider,sel.key,'cool');
         if(cooled.has(id))break;
         cooled.add(id);continue;
       }
       if(/503|UNAVAILABLE|overloaded|high demand/i.test(msg)){
+        kHit(sel.provider,sel.key,'busy');
         if(delay>30000)break;
         if($('status'))$('status').textContent='Model is busy — retrying in '+Math.round(delay/1000)+'s…';
         await sleep(delay);delay*=2;
         continue;
       }
+      kHit(sel.provider,sel.key,'fail',msg);
       throw e;
     }
   }
