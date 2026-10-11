@@ -282,10 +282,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 /* faq */
 .faq{border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(4,8,18,.4);transition:border-color .25s}
 .faq:hover{border-color:var(--border2)}
-.faq q{display:block;padding:17px 20px;cursor:pointer;font-weight:600;font-size:15px;quotes:none;list-style:none}
-.faq q::-webkit-details-marker{display:none}
-.faq q::after{content:"+";float:right;color:var(--accent2);font-size:22px;font-weight:300;line-height:1;transition:transform .3s}
-.faq[open] q::after{transform:rotate(45deg)}
+.faq summary{display:block;padding:17px 20px;cursor:pointer;font-weight:600;font-size:15px;quotes:none;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";float:right;color:var(--accent2);font-size:22px;font-weight:300;line-height:1;transition:transform .3s}
+.faq[open] summary::after{transform:rotate(45deg)}
 .faq .a{padding:0 20px 20px;color:var(--muted);font-size:14px;animation:fadein .3s ease}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 
@@ -670,13 +670,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <section id="faq"><div class="card reveal">
   <div class="eyebrow">HELP</div>
   <h2>FAQ</h2><p class="sub"></p>
-  <details class="faq" open><q>What does PromptForge actually do?</q><div class="a">It studies your video or image and writes a production-ready generation prompt for AI tools like Veo, Midjourney or Flux — plus commercial title, keywords and category metadata ready for stock sites like Adobe Stock or Shutterstock.</div></details>
-  <details class="faq"><q>Is my media uploaded anywhere?</q><div class="a">No. Files are processed in your browser. The only network call containing your media goes to the AI provider whose key you added (Gemini, Groq or OpenRouter). There is no PromptForge server.</div></details>
-  <details class="faq"><q>Which provider should I use?</q><div class="a">Gemini is the best all-rounder — it's the only one that reads actual video motion. Groq and OpenRouter work from sampled keyframes for video, but are equally capable for images. All have free tiers.</div></details>
-  <details class="faq"><q>Recreate vs Inspire — what's the difference?</q><div class="a"><b>Recreate</b> reverse-engineers the exact asset into a prompt that rebuilds it. <b>Inspire</b> studies only the style — mood, palette, lighting, camera language — and writes a prompt for a brand-new original scene in that style, never naming artists or copying the original.</div></details>
-  <details class="faq"><q>Can I add more than one API key?</q><div class="a">Yes — add as many keys per provider as you like with the "+ Add Key" button. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
-  <details class="faq"><q>Can I process many files at once?</q><div class="a">Yes. Drop multiple files and they queue up; PromptForge runs them one at a time to stay under free-tier rate limits, and every result lands in your library as its own card.</div></details>
-  <details class="faq"><q>Is PromptForge free?</q><div class="a">Yes. The app itself is free and open — you bring your own API key from a provider with a free tier. PromptForge never asks for payment or an account.</div></details>
+  <details class="faq" open><summary>What does PromptForge actually do?</summary><div class="a">It studies your video or image and writes a production-ready generation prompt for AI tools like Veo, Midjourney or Flux — plus commercial title, keywords and category metadata ready for stock sites like Adobe Stock or Shutterstock.</div></details>
+  <details class="faq"><summary>Is my media uploaded anywhere?</summary><div class="a">No. Files are processed in your browser. The only network call containing your media goes to the AI provider whose key you added (Gemini, Groq or OpenRouter). There is no PromptForge server.</div></details>
+  <details class="faq"><summary>Which provider should I use?</summary><div class="a">Gemini is the best all-rounder — it's the only one that reads actual video motion. Groq and OpenRouter work from sampled keyframes for video, but are equally capable for images. All have free tiers.</div></details>
+  <details class="faq"><summary>Recreate vs Inspire — what's the difference?</summary><div class="a"><b>Recreate</b> reverse-engineers the exact asset into a prompt that rebuilds it. <b>Inspire</b> studies only the style — mood, palette, lighting, camera language — and writes a prompt for a brand-new original scene in that style, never naming artists or copying the original.</div></details>
+  <details class="faq"><summary>Can I add more than one API key?</summary><div class="a">Yes — add as many keys per provider as you like with the "+ Add Key" button. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
+  <details class="faq"><summary>Can I process many files at once?</summary><div class="a">Yes. Drop multiple files and they queue up; PromptForge runs them one at a time to stay under free-tier rate limits, and every result lands in your library as its own card.</div></details>
+  <details class="faq"><summary>Is PromptForge free?</summary><div class="a">Yes. The app itself is free and open — you bring your own API key from a provider with a free tier. PromptForge never asks for payment or an account.</div></details>
 </div></section>
 </div>
 
