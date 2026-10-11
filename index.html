@@ -492,7 +492,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div><label class="lbl">AI provider</label>
       <select id="provider"><option value="auto">Auto (first available)</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option></select></div>
     <div><label class="lbl">Gemini model</label>
-      <select id="gmodel"><option>gemini-2.0-flash</option><option>gemini-2.0-flash-lite</option><option>gemini-1.5-pro</option></select></div>
+      <select id="gmodel"><option>gemini-2.5-flash</option><option>gemini-2.5-flash-lite</option><option>gemini-flash-latest</option></select></div>
   </div>
 </div></section>
 
@@ -712,10 +712,10 @@ function addKey(){
     const cur=getKeys(p);
     if(!cur.includes(k)){cur.push(k);localStorage.setItem('pf_'+p,cur.join(','));added++}
   });
-  if(undetected)toast('Provider not detected — pick one from the dropdown');
+  if(undetected&&!added){toast('Provider not detected — pick one from the dropdown');}
+  else{toast((added?added+' key'+(added>1?'s':'')+' added ✓':'Key already saved')+(undetected?' — some keys need manual provider':''));}
   $('keyInput').value='';
   refreshKeys();
-  toast(added?added+' key'+(added>1?'s':'')+' added ✓':'Key already saved');
 }
 function removeKey(p,i){
   const cur=getKeys(p);cur.splice(i,1);
@@ -804,8 +804,8 @@ async function callOpenAICompat(url,key,model,messages){
   if(!t)throw new Error('Provider returned no text.');
   return t;
 }
-const callGroq=(msgs,key)=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions',key||getKeys('groq')[0],'meta-llama/llama-4-scout-17b-16e-instruct',msgs);
-const callOR=(msgs,key)=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions',key||getKeys('openrouter')[0],'meta-llama/llama-4-scout-17b-16e-instruct:free',msgs);
+const callGroq=(msgs,key)=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions',key||getKeys('groq')[0],'qwen/qwen3.8-27b',msgs);
+const callOR=(msgs,key)=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions',key||getKeys('openrouter')[0],'google/gemma-4-26b-a4b-it:free',msgs);
 const fileToB64=file=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(file);});
 const fileToURL=file=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(file);});
 
