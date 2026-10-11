@@ -660,7 +660,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function setStatus(t){$('status').textContent=t||''}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
-function pillWire(id,cb){const el=$(id);el.querySelectorAll('.pill').forEach(p=>p.onclick=()=>{el.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');cb&&cb(p.dataset.v)});}
+function pillWire(id,cb){const el=$(id);el.querySelectorAll('.pill,.chip').forEach(p=>p.onclick=()=>{el.querySelectorAll('.pill,.chip').forEach(x=>x.classList.remove('on'));p.classList.add('on');cb&&cb(p.dataset.v)});}
 let MODE='video',STYLE='recreate',LAB='enhance',PRESET='veo3',METAFLAVOR='adobe',DURATION='long',STYLE_SEL=null;
 /* hover tooltips (fixed — escapes card stacking contexts) */
 const _tipEl=document.createElement('div');_tipEl.id='hovertip';document.body.appendChild(_tipEl);
