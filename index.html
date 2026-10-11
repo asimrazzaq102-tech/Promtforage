@@ -309,6 +309,16 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
+/* desktop: pro widescreen layout — full-bleed hero, floating pill nav, wider content */
+@media(min-width:1024px){
+  .container{max-width:1360px}
+  header{top:14px;max-width:1180px;margin:0 auto;border-radius:999px;border:1px solid var(--border);
+    background:rgba(4,6,12,.62);box-shadow:0 14px 44px rgba(0,0,0,.5)}
+  header .hd{padding:12px 30px}
+  .hero{width:100vw;left:50%;margin-left:-50vw;margin-right:0;margin-top:-84px;
+    border-radius:0;border-left:none;border-right:none;padding:176px 0 92px;background-position:center}
+  .hero .lead{max-width:740px;font-size:18px}
+}
 </style>
 </head>
 <body>
