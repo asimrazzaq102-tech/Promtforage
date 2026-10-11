@@ -471,7 +471,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <section id="analyzer"><div class="card reveal">
   <div class="eyebrow">ANALYZE</div>
   <h2>Upload &amp; Analyze</h2>
-  <p class="sub">Queue up files — PromptForge processes them one at a time to stay under free-tier limits.</p>
+  <p class="sub">Drop multiple files — batch analyze runs them one by one to stay under free-tier limits.</p>
   <div class="drop" id="drop">
     <div class="big">📁</div>
     <div class="dz-title">Upload Stock Videos</div>
@@ -835,7 +835,7 @@ const CATS=['Animals','Buildings and Architecture','Business','Food and Drink','
 function baseRules(target){
   return `Target generator: ${target}. Write camera language (shot type, lens feel, angle, movement for video), lighting, color palette, composition, mood/atmosphere, subject detail, environment, style descriptors native to ${target}. Never name real artists, brands, or watermarked sources.`;
 }
-function jsonAsk(){return `Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"prompt":"...","title":"...","keywords":["..."],"category":"...","description":"..."}`}
+function jsonAsk(){return `Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"prompt":"...","negative_prompt":"...","title":"...","keywords":["..."],"category":"...","description":"..."}`}
 function styleNote(){return (STYLE_SEL&&STYLE_MAP[STYLE_SEL])?` Artistic style direction: ${STYLE_MAP[STYLE_SEL]}.` : ''}
 function durNote(kind){
   if(kind!=='video')return '';
@@ -849,11 +849,11 @@ function buildAnalyze(kind,target,style){
     :'INSPIRE: study ONLY the style (mood, palette, lighting, camera language) and write a prompt for a brand-new ORIGINAL scene in that style. Do not copy the original composition or subject.';
   const kw=kind==='meta'
     ?'Skip the creative prompt (set "prompt" to an empty string). Focus on stock metadata: commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names; description one sentence; category one of: '+CATS.join(', ')+'.'
-    :'Also produce stock metadata: commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names; one-sentence description; category one of: '+CATS.join(', ')+'.';
+    :'Also produce stock metadata: commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names; one-sentence description; category one of: '+CATS.join(', ')+'; plus a "negative_prompt": comma-separated list of things to AVOID when generating (artifacts, distortions, bad anatomy, watermark, text overlay, blur, low quality, oversaturation).';
   return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)} ${kw} ${jsonAsk()}`;
 }
 function buildLab(tool,target,input,n){
-  if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} Return ONLY valid JSON: {"prompt":"..."}\nIdea: ${input}`;
+  if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} Also include a negative_prompt: comma-separated list of things to AVOID (artifacts, distortions, bad anatomy, watermark, text, blur, low quality). Return ONLY valid JSON: {"prompt":"...","negative_prompt":"..."}\nIdea: ${input}`;
   if(tool==='p2m')return `You are a stock-metadata expert. From the prompt below infer stock-upload metadata. Commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names, one-sentence description, category one of: ${CATS.join(', ')}. Return ONLY valid JSON: {"title":"...","keywords":["..."],"category":"...","description":"..."}\nPrompt: ${input}`;
   return `You are a prompt engineer. Write ${n} distinct variations of the prompt below for ${target} — same quality bar, different angles/subjects/moods.${styleNote()} Return ONLY valid JSON: {"variations":["..."]}\nPrompt: ${input}`;
 }
@@ -881,6 +881,7 @@ function addFiles(list){
 }
 function renderQueue(){
   $('queue').innerHTML=QUEUE.map(q=>`<div class="qitem">${q.file.type.startsWith('image')?`<img src="${q.thumb}">`:`<video src="${q.thumb}" muted></video>`}<span class="nm">${esc(q.file.name)}</span><span class="st2 ${q.st==='run'?'run':q.st==='done'?'done':q.st==='err'?'err':''}">${{wait:'QUEUED',run:'WORKING…',done:'DONE',err:'ERROR'}[q.st]}</span>${q.st==='wait'?`<button class="rm" onclick="rmQ('${q.id}')">×</button>`:''}</div>`).join('');
+  $('analyzeBtn').innerHTML='⚡ Analyze batch'+(QUEUE.length?` (${QUEUE.length})`:'');
 }
 function rmQ(id){QUEUE=QUEUE.filter(q=>q.id!==id);renderQueue()}
 function clearQueue(){QUEUE=[];renderQueue();setStatus('');$('prog').style.display='none'}
@@ -914,7 +915,7 @@ async function analyzeOne(q,sel){
   });
   const d=parseJSON(text);
   saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE,prov:sel.provider,
-    prompt:d.prompt||'',title:d.title||q.file.name,keywords:Array.isArray(d.keywords)?d.keywords:[],category:d.category||'',description:d.description||'',ts:Date.now()});
+    prompt:d.prompt||'',neg:d.negative_prompt||'',title:d.title||q.file.name,keywords:Array.isArray(d.keywords)?d.keywords:[],category:d.category||'',description:d.description||'',ts:Date.now()});
 }
 async function buildVisionMessages(q,instr,prov){
   const imgs=[];
@@ -953,7 +954,7 @@ async function runLab(){
       <div class="btnrow"><button class="btn sm ghost" onclick="copyMetaLab()">Copy metadata</button></div></div>`;
       window._labMeta=d;
     }else{
-      $('labout').innerHTML=`<div class="rescard"><div class="rtitle">Enhanced prompt</div><textarea id="le0">${esc(d.prompt||'')}</textarea><div class="btnrow"><button class="btn sm ghost" onclick="copyT('le0')">Copy</button><button class="btn sm ghost" onclick="labEnhToLib()">Save to library</button></div></div>`;
+      $('labout').innerHTML=`<div class="rescard"><div class="rtitle">Enhanced prompt</div><textarea id="le0">${esc(d.prompt||'')}</textarea>${d.negative_prompt?`<label class="lbl">Negative prompt</label><textarea id="le0n">${esc(d.negative_prompt)}</textarea>`:''}<div class="btnrow"><button class="btn sm ghost" onclick="copyT('le0')">Copy</button>${d.negative_prompt?`<button class="btn sm ghost" onclick="copyT('le0n')">Copy negative</button>`:''}<button class="btn sm ghost" onclick="labEnhToLib()">Save to library</button></div></div>`;
     }
     $('labstatus').textContent='Done.';
   }catch(e){$('labstatus').textContent='Error: '+e.message}
@@ -962,7 +963,7 @@ async function runLab(){
 function copyT(id){navigator.clipboard.writeText($(id).value).then(()=>{toast('Copied ✓')})}
 function copyMetaLab(){const d=window._labMeta||{};navigator.clipboard.writeText(`${d.title||''}\n${(d.keywords||[]).join(', ')}\n${d.category||''}\n${d.description||''}`).then(()=>toast('Copied ✓'))}
 function labToLib(i){saveResult({file:'variation',thumb:'',kind:'text',target:$('target').value,style:'-',prov:'-',prompt:window._labVars[i]||'',title:'Variation '+(i+1),keywords:[],category:'',description:'',ts:Date.now()});}
-function labEnhToLib(){saveResult({file:'enhanced',thumb:'',kind:'text',target:$('target').value,style:'-',prov:'-',prompt:$('le0').value,title:'Enhanced prompt',keywords:[],category:'',description:'',ts:Date.now()});}
+function labEnhToLib(){const n=$('le0n');saveResult({file:'enhanced',thumb:'',kind:'text',target:$('target').value,style:'-',prov:'-',prompt:$('le0').value,neg:n?n.value:'',title:'Enhanced prompt',keywords:[],category:'',description:'',ts:Date.now()});}
 
 /* ============ library ============ */
 let LIB=[];
@@ -975,15 +976,18 @@ function renderLib(){
   el.innerHTML=LIB.map((r,i)=>`<div class="rescard">
     <div class="rhead">${r.thumb?`<img class="thumb" src="${r.thumb}">`:''}<div><div class="rtitle">${esc(r.title)}</div><div class="rmeta">${esc(r.file)} · ${esc(r.kind)} · ${esc(r.target)} · ${esc(r.style)} · via ${esc(r.prov)}</div></div></div>
     ${r.prompt?`<label class="lbl">Prompt (editable)</label><textarea id="lp${i}">${esc(r.prompt)}</textarea>`:''}
+    ${r.prompt&&r.neg?`<label class="lbl">Negative prompt</label><textarea id="ln${i}">${esc(r.neg)}</textarea>`:''}
     ${r.keywords&&r.keywords.length?`<div class="tagbox">${r.keywords.map(k=>`<span class="tag">${esc(k)}</span>`).join('')}</div>`:''}
     ${r.category?`<div class="kv"><b>Category:</b> ${esc(r.category)}</div>`:''}
     ${r.description?`<div class="kv">${esc(r.description)}</div>`:''}
     <div class="btnrow">
       ${r.prompt?`<button class="btn sm ghost" onclick="copyLP(${i})">Copy prompt</button>`:''}
+      ${r.prompt&&r.neg?`<button class="btn sm ghost" onclick="copyLPN(${i})">Copy negative</button>`:''}
       <button class="btn sm ghost" onclick="delR(${i})">Delete</button>
     </div></div>`).join('');
 }
 function copyLP(i){const t=$('lp'+i);navigator.clipboard.writeText(t?t.value:LIB[i].prompt).then(()=>toast('Copied ✓'))}
+function copyLPN(i){const t=$('ln'+i);navigator.clipboard.writeText(t?t.value:LIB[i].neg).then(()=>toast('Copied ✓'))}
 function delR(i){LIB.splice(i,1);persistLib();renderLib()}
 function clearLib(){if(confirm('Clear all results?')){LIB=[];persistLib();renderLib()}}
 
@@ -1006,7 +1010,7 @@ function exportCSV(kind){
 }
 function fullReport(){
   if(!LIB.length){toast('Library is empty — analyze something first.');return}
-  const txt=LIB.map((r,i)=>`===== RESULT ${i+1} =====\nTitle: ${r.title}\nFile: ${r.file}\nTarget: ${r.target} · Style: ${r.style} · via ${r.prov}\n\nPROMPT:\n${r.prompt||'(none)'}\n\nKEYWORDS:\n${(r.keywords||[]).join(', ')}\n\nCATEGORY: ${r.category||'—'}\nDESCRIPTION: ${r.description||'—'}\n`).join('\n');
+  const txt=LIB.map((r,i)=>`===== RESULT ${i+1} =====\nTitle: ${r.title}\nFile: ${r.file}\nTarget: ${r.target} · Style: ${r.style} · via ${r.prov}\n\nPROMPT:\n${r.prompt||'(none)'}\n\nNEGATIVE PROMPT:\n${r.neg||'(none)'}\n\nKEYWORDS:\n${(r.keywords||[]).join(', ')}\n\nCATEGORY: ${r.category||'—'}\nDESCRIPTION: ${r.description||'—'}\n`).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download='promptforge_full_report.txt';a.click();
   toast('Report downloaded ✓');
 }
