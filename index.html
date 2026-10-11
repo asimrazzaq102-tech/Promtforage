@@ -1025,7 +1025,28 @@ function parseJSON(t){
   let s=t.trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
   const a=s.indexOf('{'),b=s.lastIndexOf('}');
   if(a>-1&&b>a)s=s.slice(a,b+1);
-  return JSON.parse(s);
+  try{return JSON.parse(s)}catch(e){return parseJSONRepair(s,e)}
+}
+function parseJSONRepair(s,origErr){
+  // salvage a response truncated mid-string: close the open string, balance brackets
+  try{
+    let out='',inStr=false,esc=false;const stack=[];
+    for(const ch of s){
+      out+=ch;
+      if(esc){esc=false;continue}
+      if(ch==='\\'&&inStr){esc=true;continue}
+      if(ch==='"'){inStr=!inStr;continue}
+      if(inStr)continue;
+      if(ch==='{'||ch==='[')stack.push(ch);
+      else if(ch==='}'||ch===']'){const want=ch==='}'?'{':'[';if(stack.length&&stack[stack.length-1]===want)stack.pop()}
+    }
+    if(inStr)out+='"';
+    while(stack.length){out+=stack.pop()==='{'?'}':']'}
+    const d=JSON.parse(out);
+    // only accept if we salvaged something meaningful
+    if(d&&(d.replica||d.alternative||d.prompt||(Array.isArray(d.scenes)&&d.scenes.length)||Array.isArray(d)))return d;
+    throw origErr;
+  }catch(e2){throw origErr}
 }
 /* ============ queue & analysis ============ */
 let QUEUE=[];
@@ -1071,7 +1092,7 @@ async function analyzeOne(q,sel){
   const target=$('target').value,dur=await fileDuration(q.file),instr=buildAnalyze(kind,target,STYLE,dur);
   const maxTok=(kind==='scenes'||kind==='dual'||(kind==='video'&&DURATION!=='10s'))?8192:undefined;
   let b64cache=null,b64done=false;
-  const text=await resilientCall(sel.provider,async s=>{
+  const getText=()=>resilientCall(sel.provider,async s=>{
     if(s.provider==='gemini'){
       if(!b64done){b64cache=await fileToB64(q.file);b64done=true}
       return await callGemini([{text:instr},{inlineData:{mimeType:q.file.type,data:b64cache}}],$('gmodel').value,s.key,maxTok);
@@ -1079,7 +1100,13 @@ async function analyzeOne(q,sel){
     const msgs=await buildVisionMessages(q,instr,s.provider);
     return s.provider==='groq'?await callGroq(msgs,s.key,maxTok):await callOR(msgs,s.key,maxTok);
   });
-  const d=parseJSON(text);
+  let text=await getText(),d;
+  try{d=parseJSON(text)}
+  catch(e){
+    setStatus('Response was cut off — retrying '+q.file.name+'…');
+    text=await getText();
+    d=parseJSON(text);
+  }
   if(kind==='dual'){
     if(!d.replica&&!d.alternative)throw new Error('No prompts returned — try again.');
     const sty=(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE;
