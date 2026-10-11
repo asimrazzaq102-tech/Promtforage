@@ -156,7 +156,10 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .pill:hover{color:var(--text)}
 .pill.on{background:var(--grad);color:#fff;box-shadow:0 5px 18px rgba(139,92,246,.45);font-weight:700}
 #modePills{display:grid;grid-template-columns:1fr 1fr;width:100%;text-align:center}
-#modePills .pill{padding:14px 10px;font-size:13.5px}
+#modePills .pill{padding:14px 10px;font-size:13.5px;position:relative}
+#modePills .pill::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%) translateY(5px);background:#fff;color:#0b1220;font-size:10.5px;font-weight:800;letter-spacing:.5px;padding:8px 13px;border-radius:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;box-shadow:0 10px 26px rgba(0,0,0,.4);z-index:60}
+#modePills .pill:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.modedesc{margin-top:9px;font-size:12.5px;color:var(--muted);text-align:center;letter-spacing:.2px}
 .chips{display:flex;gap:9px;flex-wrap:wrap}
 .chip{padding:9px 19px;border-radius:99px;border:1px solid var(--border);background:rgba(4,8,18,.55);color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;user-select:none;transition:.2s;font-family:inherit}
 .chip:hover{color:var(--text);border-color:var(--border2)}
@@ -446,13 +449,14 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
   <label class="lbl">Mode</label>
   <div class="pills" id="modePills">
-    <div class="pill on" data-v="video">🎬 VIDEO TO PROMPT</div>
-    <div class="pill" data-v="image">🖼️ IMAGE TO PROMPT</div>
-    <div class="pill" data-v="meta">🏷️ METADATA ONLY</div>
-    <div class="pill" data-v="scenes">🎞️ SCENE BREAKDOWN</div>
-    <div class="pill" data-v="dual">🔁 DUAL PROMPT</div>
-    <div class="pill" data-v="lab">🧪 PROMPT LAB</div>
+    <div class="pill on" data-v="video" data-tip="REVERSE-ENGINEER A CLIP">🎬 VIDEO TO PROMPT</div>
+    <div class="pill" data-v="image" data-tip="DESCRIBE ANY STILL">🖼️ IMAGE TO PROMPT</div>
+    <div class="pill" data-v="meta" data-tip="TITLE, DESCRIPTION AND TAGS ONLY">🏷️ METADATA ONLY</div>
+    <div class="pill" data-v="scenes" data-tip="SPLIT VIDEO INTO DETAILED SCENES">🎞️ SCENE BREAKDOWN</div>
+    <div class="pill" data-v="dual" data-tip="REPLICA + NEW STORY — 2 PROMPTS">🔁 DUAL PROMPT</div>
+    <div class="pill" data-v="lab" data-tip="WORK FROM TEXT, NO FILE NEEDED">🧪 PROMPT LAB</div>
   </div>
+  <div class="modedesc" id="modeDesc">Reverse-engineer a clip — upload a video, get a ready prompt.</div>
   <div id="altStoryWrap" style="display:none;margin-top:10px">
     <label class="lbl" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px">
       <input type="checkbox" id="altToggle" style="width:18px;height:18px;accent-color:#22d3ee;flex-shrink:0"> Also generate <b>&nbsp;alternative story&nbsp;</b> version (same scenes, brand-new story)
@@ -664,6 +668,8 @@ pillWire('modePills',v=>{
     document.querySelectorAll('#modePills .pill').forEach(x=>x.classList.toggle('on',x.dataset.v===MODE));return}
   MODE=v;
   const aw=$('altStoryWrap');if(aw)aw.style.display=(v==='scenes'||v==='dual')?'block':'none';
+  const md=$('modeDesc');
+  if(md)md.textContent=({video:'Reverse-engineer a clip — upload a video, get a ready prompt.',image:'Describe any still — upload an image, get a ready prompt.',meta:'Title, description and tags only — no prompt written.',scenes:'Split a video into detailed production scenes — timeline, camera, dialogue, SFX.',dual:'Get exactly 2 prompts — 1 exact replica + 1 brand-new story version.'}[v]||'');
 });
 pillWire('stylePills',v=>STYLE=v);
 pillWire('labPills',v=>{LAB=v;$('variWrap').style.display=v==='vari'?'block':'none';});
