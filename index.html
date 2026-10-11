@@ -881,7 +881,7 @@ function addFiles(list){
 }
 function renderQueue(){
   $('queue').innerHTML=QUEUE.map(q=>`<div class="qitem">${q.file.type.startsWith('image')?`<img src="${q.thumb}">`:`<video src="${q.thumb}" muted></video>`}<span class="nm">${esc(q.file.name)}</span><span class="st2 ${q.st==='run'?'run':q.st==='done'?'done':q.st==='err'?'err':''}">${{wait:'QUEUED',run:'WORKING…',done:'DONE',err:'ERROR'}[q.st]}</span>${q.st==='wait'?`<button class="rm" onclick="rmQ('${q.id}')">×</button>`:''}</div>`).join('');
-  $('analyzeBtn').innerHTML='⚡ Analyze batch'+(QUEUE.length?` (${QUEUE.length})`:'');
+  $('analyzeBtn').innerHTML='⚡ Analyze'+(QUEUE.length?` batch (${QUEUE.length})`:'');
 }
 function rmQ(id){QUEUE=QUEUE.filter(q=>q.id!==id);renderQueue()}
 function clearQueue(){QUEUE=[];renderQueue();setStatus('');$('prog').style.display='none'}
