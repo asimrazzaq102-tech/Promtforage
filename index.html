@@ -81,15 +81,17 @@ nav.dnav a:hover::after{width:100%}
 
 /* brand wordmark hero — code version of the Canva graphic (layout static, colors animate) */
 .hero>*{position:relative;z-index:1}
-.herostage{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;animation:hueDrift 20s ease-in-out infinite alternate}
-.herostage i{position:absolute;border-radius:50%;filter:blur(60px);mix-blend-mode:screen;will-change:transform,opacity}
-.herostage .s1{width:78%;aspect-ratio:1.4;left:-20%;top:-32%;background:radial-gradient(ellipse,rgba(139,92,246,.95),transparent 65%);animation:flowA 9s ease-in-out infinite alternate}
-.herostage .s2{width:72%;aspect-ratio:1.4;right:-22%;top:-26%;background:radial-gradient(ellipse,rgba(34,211,238,.9),transparent 65%);animation:flowB 12s ease-in-out infinite alternate}
-.herostage .s3{width:62%;aspect-ratio:1.4;left:20%;bottom:-38%;background:radial-gradient(ellipse,rgba(217,70,239,.75),transparent 65%);animation:flowC 15s ease-in-out infinite alternate}
-@keyframes hueDrift{from{filter:hue-rotate(-28deg)}to{filter:hue-rotate(28deg)}}
-@keyframes flowA{from{transform:translateX(-18%) translateY(0) scale(1);opacity:.6}to{transform:translateX(38%) translateY(7%) scale(1.3);opacity:1}}
-@keyframes flowB{from{transform:translateX(20%) translateY(5%) scale(1.25);opacity:1}to{transform:translateX(-36%) translateY(-5%) scale(1);opacity:.55}}
-@keyframes flowC{from{transform:translateX(-28%) scale(1);opacity:.55}to{transform:translateX(30%) scale(1.35);opacity:.95}}
+.herostage{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurorastrip{position:absolute;top:-25%;bottom:-25%;left:0;width:200%;
+ background:
+  radial-gradient(560px 420px at 15% 32%, rgba(139,92,246,.6), transparent 70%),
+  radial-gradient(640px 460px at 40% 62%, rgba(34,211,238,.55), transparent 70%),
+  radial-gradient(560px 420px at 68% 28%, rgba(217,70,239,.5), transparent 70%),
+  radial-gradient(560px 420px at 65% 32%, rgba(139,92,246,.6), transparent 70%),
+  radial-gradient(640px 460px at 90% 62%, rgba(34,211,238,.55), transparent 70%),
+  radial-gradient(560px 420px at 118% 28%, rgba(217,70,239,.5), transparent 70%);
+ animation:auroraSlide 16s linear infinite;will-change:transform}
+@keyframes auroraSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .sweep{position:absolute;top:-25%;bottom:-25%;width:36%;left:-45%;background:linear-gradient(100deg,transparent,rgba(196,181,253,.28) 42%,rgba(255,255,255,.34) 50%,rgba(103,232,249,.30) 58%,transparent);filter:blur(16px);transform:skewX(-12deg);animation:sweep 7s ease-in-out infinite;mix-blend-mode:screen}
 @keyframes sweep{0%{left:-45%;opacity:0}10%{opacity:1}48%{left:108%;opacity:1}60%,100%{left:108%;opacity:0}}
 .wordmark{font-family:var(--font-d);font-weight:700;font-size:clamp(54px,9vw,102px);letter-spacing:-3px;line-height:1;margin:8px 0 16px;background:linear-gradient(100deg,#ffffff 15%,#c4b5fd 48%,#67e8f9 82%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 34px rgba(139,92,246,.45))}
@@ -299,7 +301,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   #modePills{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){
-  .orb,.herostage,.herostage i,.herostage .sweep,.mtrack,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
+  .orb,.herostage .aurorastrip,.herostage .sweep,.mtrack,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
@@ -332,7 +334,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <div class="container">
 
 <div class="hero reveal">
-  <div class="herostage"><i class="s1"></i><i class="s2"></i><i class="s3"></i><b class="sweep"></b></div>
+  <div class="herostage"><div class="aurorastrip"></div><b class="sweep"></b></div>
   <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
   <div class="wordmark">PromptForge</div>
   <h1>Turn Any Media Into<br><span class="typeblue" id="typeLine"></span><span class="caret">|</span></h1>
