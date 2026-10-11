@@ -67,7 +67,7 @@ nav.dnav a:hover::after{width:100%}
 .badge{display:inline-flex;align-items:center;gap:9px;background:rgba(79,140,255,.1);border:1px solid rgba(79,140,255,.35);color:#a9c6ff;font-size:12px;font-weight:700;padding:7px 17px;border-radius:99px;margin-bottom:24px;letter-spacing:1.6px}
 .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.hero h1{font-family:var(--font-d);font-size:clamp(34px,6vw,64px);font-weight:700;line-height:1.14;letter-spacing:-1.5px;margin-bottom:20px}
+.hero h1{font-family:var(--font-d);font-size:clamp(28px,4.6vw,46px);font-weight:700;line-height:1.14;letter-spacing:-1.5px;margin-bottom:20px}
 .typeblue{color:var(--blue);text-shadow:0 0 34px rgba(79,140,255,.55);white-space:nowrap}
 .caret{display:inline-block;color:var(--blue);font-weight:300;animation:blink 1s step-end infinite;margin-left:2px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -75,6 +75,16 @@ nav.dnav a:hover::after{width:100%}
 .qchips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .qchip{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;padding:8px 17px;border-radius:99px;cursor:pointer;transition:.2s;font-family:inherit}
 .qchip:hover{color:var(--text);border-color:var(--blue);box-shadow:0 0 18px rgba(79,140,255,.25);transform:translateY(-1px)}
+
+/* brand wordmark hero — code version of the Canva graphic (layout static, colors animate) */
+.hero>*{position:relative;z-index:1}
+.herostage{position:absolute;inset:-30px 0;z-index:0;pointer-events:none;overflow:hidden}
+.herostage i{position:absolute;border-radius:50%;filter:blur(90px)}
+.herostage .s1{width:540px;height:540px;left:50%;top:-200px;margin-left:-420px;background:radial-gradient(circle,rgba(139,92,246,.55),transparent 65%);animation:stageA 14s ease-in-out infinite alternate}
+.herostage .s2{width:480px;height:480px;left:50%;top:-140px;margin-left:-40px;background:radial-gradient(circle,rgba(34,211,238,.5),transparent 65%);animation:stageB 18s ease-in-out infinite alternate}
+@keyframes stageA{from{opacity:.35;transform:scale(1)}to{opacity:.7;transform:scale(1.18)}}
+@keyframes stageB{from{opacity:.7;transform:scale(1.12)}to{opacity:.35;transform:scale(.94)}}
+.wordmark{font-family:var(--font-d);font-weight:700;font-size:clamp(54px,9vw,102px);letter-spacing:-3px;line-height:1;margin:8px 0 16px;background:linear-gradient(100deg,#ffffff 15%,#c4b5fd 48%,#67e8f9 82%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 34px rgba(139,92,246,.45))}
 
 /* sections & cards */
 section{padding:30px 0;scroll-margin-top:90px}
@@ -261,7 +271,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   #modePills{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){
-  .orb,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
+  .orb,.herostage i,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
@@ -294,7 +304,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <div class="container">
 
 <div class="hero reveal">
+  <div class="herostage"><i class="s1"></i><i class="s2"></i></div>
   <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
+  <div class="wordmark">PromptForge</div>
   <h1>Turn Any Media Into<br><span class="typeblue" id="typeLine"></span><span class="caret">|</span></h1>
   <p class="lead">Drop a video or image — get a ready-to-generate prompt for Veo, Midjourney, Flux &amp; more, plus stock-ready title, keywords &amp; category metadata. Everything runs in your browser.</p>
   <div class="qchips">
