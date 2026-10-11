@@ -995,7 +995,7 @@ function detailRules(dur,unit){
 function buildAnalyze(kind,target,style,dur){
   if(kind==='dual'){
     const idea=($('altStory')&&$('altStory').value.trim())||'';
-    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${detailRules(dur,'prompt')} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}):
+    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${detailRules(dur,'prompt')} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}). QUALITY BAR: each prompt must be detailed enough that an AI video generator (Google Flow / Veo) can recreate the video faithfully from the prompt alone — every story beat described shot-by-shot with full visual specificity, nothing left for the generator to guess:
 1. "replica": faithfully replicates the EXACT video — same scenes in order, same subjects, actions, setting, mood and camera language.
 2. "alternative": the SAME video structure and approximate length, but a BRAND-NEW story: ${idea?`use this story idea: "${idea}"`:'invent an original, engaging story yourself'}. Keep the pacing and shot flow; change characters, setting, wardrobe, actions and dialogue (dialogue in the new story's natural language).
 Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"replica":"...","alternative":"..."}`;
