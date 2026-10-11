@@ -236,17 +236,20 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .kv{font-size:13px;color:var(--muted);margin:5px 0}.kv b{color:var(--text)}
 
 /* community */
-.comm-card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid var(--border);border-radius:22px;padding:34px 28px;text-align:center;transition:.3s;position:relative;overflow:hidden}
-.comm-card::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(52,211,153,.55),transparent)}
-.comm-card:hover{transform:translateY(-5px);border-color:var(--border2);box-shadow:0 26px 70px rgba(0,0,0,.5)}
-.comm-logo{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 12px 34px rgba(139,92,246,.45);border:3px solid rgba(255,255,255,.15)}
+.comm-card{--acc:#8b5cf6;--acc2:#6d28d9;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid var(--border);border-radius:22px;padding:34px 28px;text-align:center;transition:.3s;position:relative;overflow:hidden}
+.comm-card.c1{--acc:#8b5cf6;--acc2:#6d28d9}
+.comm-card.c2{--acc:#22d3ee;--acc2:#0e7490}
+.comm-card.c3{--acc:#34d399;--acc2:#047857}
+.comm-card::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent)}
+.comm-card:hover{transform:translateY(-5px);border-color:var(--acc);box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.comm-logo{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 12px 34px rgba(0,0,0,.45);border:3px solid rgba(255,255,255,.15)}
 .comm-card h3{font-family:var(--font-d);font-size:21px;margin-bottom:4px}
 .comm-card .csub{color:var(--muted);font-size:13.5px;margin-bottom:18px}
 .cticks{list-style:none;text-align:left;max-width:280px;margin:0 auto 24px;display:flex;flex-direction:column;gap:10px}
 .cticks li{color:var(--muted);font-size:14px;display:flex;gap:10px;align-items:flex-start}
-.cticks li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0}
-.join-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#34d399,#059669);color:#fff;font-weight:800;font-size:14px;letter-spacing:1px;text-decoration:none;padding:14px 44px;border-radius:14px;box-shadow:0 10px 28px rgba(5,150,105,.4);transition:.2s;width:100%}
-.join-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(5,150,105,.55)}
+.cticks li::before{content:"✓";color:var(--acc);font-weight:800;flex-shrink:0}
+.join-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:800;font-size:14px;letter-spacing:1px;text-decoration:none;padding:14px 44px;border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.4);transition:.2s;width:100%;cursor:pointer}
+.join-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,0,0,.55)}
 .ph-note{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;background:rgba(251,191,36,.06);border:1px dashed rgba(251,191,36,.35);border-radius:12px;padding:12px}
 
 /* faq */
@@ -533,7 +536,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <h2 class="secttl">Join Our Official Networks &amp; Grow With Us</h2>
   <p class="sub" style="text-align:center;max-width:620px;margin:0 auto">Connect with fellow creators — daily prompt drops, workflow guides and early access to new PromptForge features.</p>
   <div class="carwrap reveal" id="carousel"><div class="cargrid">
-    <div class="comm-card">
+    <div class="comm-card c1">
       <div class="comm-logo">📣</div>
       <h3>Your Channel #1</h3>
       <p class="csub">AI prompts &amp; updates</p>
@@ -542,9 +545,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <li>New feature announcements first</li>
         <li>Direct support from the community</li>
       </ul>
-      <a class="join-btn" href="#">JOIN NOW</a>
+      <a class="join-btn" href="#" onclick="return joinChannel(0)">JOIN NOW</a>
     </div>
-    <div class="comm-card">
+    <div class="comm-card c2">
       <div class="comm-logo">🚀</div>
       <h3>Your Channel #2</h3>
       <p class="csub">Creator growth hub</p>
@@ -553,9 +556,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <li>Stock-selling tips &amp; strategies</li>
         <li>Early beta access to new tools</li>
       </ul>
-      <a class="join-btn" href="#">JOIN NOW</a>
+      <a class="join-btn" href="#" onclick="return joinChannel(1)">JOIN NOW</a>
     </div>
-    <div class="comm-card">
+    <div class="comm-card c3">
       <div class="comm-logo">🎬</div>
       <h3>Your Channel #3</h3>
       <p class="csub">Stock &amp; prompts hub</p>
@@ -564,14 +567,14 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
         <li>Monetization playbooks</li>
         <li>Member-only Q&amp;A sessions</li>
       </ul>
-      <a class="join-btn" href="#">JOIN NOW</a>
+      <a class="join-btn" href="#" onclick="return joinChannel(2)">JOIN NOW</a>
     </div>
   </div></div>
   <div class="carnav">
     <button class="cbtn" onclick="carousel.scrollBy({left:-360,behavior:'smooth'})" aria-label="Previous">‹</button>
     <button class="cbtn" onclick="carousel.scrollBy({left:360,behavior:'smooth'})" aria-label="Next">›</button>
   </div>
-  <div class="ph-note">🔧 Placeholder cards — paste your real WhatsApp / community links into the three JOIN NOW buttons above.</div>
+<div class="ph-note">🔧 Teeno cards ready hain — apne WhatsApp channel ke <b>naam + link</b> bhej do, main 1 minute me laga dunga. Phir JOIN NOW dabane se seedha WhatsApp khulega.</div>
 </div></section>
 
 <!-- FAQ -->
@@ -1010,6 +1013,31 @@ function fullReport(){
 }
 
 /* ============ init ============ */
+/* ============ community: WhatsApp links + auto-slide ============ */
+const CHANNEL_WA=["","",""]; /* <-- apne WhatsApp channel links yahan dalo, e.g. "https://whatsapp.com/channel/XXXX" */
+function joinChannel(i){
+  const u=CHANNEL_WA[i];
+  if(u){window.open(u,"_blank");return false}
+  toast("Channel link jald aa raha hai ✓");
+  return false;
+}
+(function(){
+  const c=document.getElementById('carousel'); if(!c) return;
+  const step=()=>{const k=c.querySelector('.comm-card');return k?k.offsetWidth+20:360};
+  let t=null,resume=null;
+  function play(){stop();t=setInterval(()=>{
+    if(document.hidden)return;
+    if(c.scrollLeft+c.clientWidth>=c.scrollWidth-12){c.scrollTo({left:0,behavior:'smooth'})}
+    else{c.scrollBy({left:step(),behavior:'smooth'})}
+  },3200)}
+  function stop(){if(t){clearInterval(t);t=null}}
+  function pauseTemp(){stop();clearTimeout(resume);resume=setTimeout(play,8000)}
+  c.addEventListener('pointerdown',pauseTemp,{passive:true});
+  c.addEventListener('wheel',pauseTemp,{passive:true});
+  document.addEventListener('visibilitychange',()=>{document.hidden?stop():play()});
+  new IntersectionObserver(es=>es.forEach(e=>{e.isIntersecting?play():stop()}),{threshold:.15}).observe(c);
+})();
+
 refreshKeys();renderLib();
 
 /* animated stat counters: 0 -> target over 1.2s, ease-out */
