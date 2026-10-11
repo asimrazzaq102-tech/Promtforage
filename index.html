@@ -321,7 +321,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 /* desktop: pro widescreen layout — full-bleed hero, floating pill nav, wider content */
 @media(min-width:1024px){
   .container{max-width:1360px}
-  #modePills{grid-template-columns:repeat(5,1fr)}
+  #modePills{grid-template-columns:repeat(6,1fr)}
   header{top:14px;max-width:1180px;margin:0 auto;border-radius:999px;border:1px solid var(--border);
     background:rgba(4,6,12,.62);box-shadow:0 14px 44px rgba(0,0,0,.5)}
   header .hd{padding:12px 30px}
@@ -450,6 +450,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div class="pill" data-v="image">🖼️ IMAGE TO PROMPT</div>
     <div class="pill" data-v="meta">🏷️ METADATA ONLY</div>
     <div class="pill" data-v="scenes">🎞️ SCENE BREAKDOWN</div>
+    <div class="pill" data-v="dual">🔁 DUAL PROMPT</div>
     <div class="pill" data-v="lab">🧪 PROMPT LAB</div>
   </div>
   <div id="altStoryWrap" style="display:none;margin-top:10px">
@@ -662,7 +663,7 @@ pillWire('modePills',v=>{
   if(v==='lab'){document.getElementById('lab').scrollIntoView({behavior:'smooth'});
     document.querySelectorAll('#modePills .pill').forEach(x=>x.classList.toggle('on',x.dataset.v===MODE));return}
   MODE=v;
-  const aw=$('altStoryWrap');if(aw)aw.style.display=v==='scenes'?'block':'none';
+  const aw=$('altStoryWrap');if(aw)aw.style.display=(v==='scenes'||v==='dual')?'block':'none';
 });
 pillWire('stylePills',v=>STYLE=v);
 pillWire('labPills',v=>{LAB=v;$('variWrap').style.display=v==='vari'?'block':'none';});
@@ -875,6 +876,13 @@ function durNote(kind){
   return ' Pacing: designed as a 60-second+ cinematic piece — slow build, breathing room.';
 }
 function buildAnalyze(kind,target,style){
+  if(kind==='dual'){
+    const idea=($('altStory')&&$('altStory').value.trim())||'';
+    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. Write TWO long, flowing, cinematic generation prompts (each 150-250 words, single-paragraph professional style, with camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}):
+1. "replica": faithfully replicates the EXACT video — same scenes in order, same subjects, actions, setting, mood and camera language.
+2. "alternative": the SAME video structure and approximate length, but a BRAND-NEW story: ${idea?`use this story idea: "${idea}"`:'invent an original, engaging story yourself'}. Keep the pacing and shot flow; change characters, setting, wardrobe, actions and dialogue (dialogue in the new story's natural language).
+Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"replica":"...","alternative":"..."}`;
+  }
   if(kind==='scenes')return `You are an expert AI video analyst and film director. Split the attached video into natural scenes of roughly 10 seconds each (if the input is a single image, produce exactly 1 scene). For EACH scene write a full production-ready breakdown.${styleNote()} Target generator: ${target}. Dialogue must be in the characters' natural spoken language (e.g. Hindi/Urdu for South Asian rural settings). Match technical.aspect_ratio to the media's own orientation (use 9:16 if vertical, 16:9 if horizontal).
 Return ONLY valid JSON, no markdown fences, no commentary. Schema:
 {"scenes":[{"scene_number":"Scene 1 of N · 0 sec to 10 sec","time_window":"0s – 10s","prompt":"full generation prompt for this scene","style":"e.g. Photorealistic cinematic live-action footage shot on 35mm film","scene":"location/set description","characters":[{"name":"...","appearance":"...","wardrobe":"...","action":"..."}],"camera":{"movement":"...","framing":"...","lens":"...","look":"..."},"lighting":{"key_light":"...","fill_and_ambient":"..."},"timeline":[{"time":"0.00s – 1.00s","action":"...","camera_motion":"...","dialogue":"...","sfx_cue":"..."}],"voice_over":{"language":"...","tone":"...","dialogue_log":[{"speaker":"...","text":"...","timestamp":"..."}]},"audio":{"ambient":"...","sfx":["..."],"music":"..."},"negative_prompt":["blurry","distorted anatomy","watermark","text overlay"],"technical":{"target_duration_sec":10,"aspect_ratio":"9:16","resolution":"720x1280"}}]}`;
@@ -937,7 +945,7 @@ async function runQueue(){
   $('analyzeBtn').disabled=false;setTimeout(()=>$('prog').style.display='none',1500);
 }
 async function analyzeOne(q,sel){
-  const kind=MODE==='meta'?'meta':MODE==='scenes'?'scenes':(q.file.type.startsWith('video')?'video':'image');
+  const kind=MODE==='meta'?'meta':MODE==='scenes'?'scenes':MODE==='dual'?'dual':(q.file.type.startsWith('video')?'video':'image');
   const target=$('target').value,instr=buildAnalyze(kind,target,STYLE);
   const maxTok=kind==='scenes'?8192:undefined;
   const text=await resilientCall(sel.provider,async s=>{
@@ -949,6 +957,13 @@ async function analyzeOne(q,sel){
     return s.provider==='groq'?await callGroq(msgs,s.key,maxTok):await callOR(msgs,s.key,maxTok);
   });
   const d=parseJSON(text);
+  if(kind==='dual'){
+    if(!d.replica&&!d.alternative)throw new Error('No prompts returned — try again.');
+    const sty=(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE;
+    saveResult({file:q.file.name,thumb:q.thumb,kind:'dual',target,style:sty,prov:sel.provider,
+      prompt:d.replica||'',altPrompt:d.alternative||'',title:q.file.name+' — Dual prompt',ts:Date.now()});
+    return;
+  }
   if(kind==='scenes'){
     const scenes=Array.isArray(d)?d:(Array.isArray(d.scenes)?d.scenes:[]);
     if(!scenes.length)throw new Error('No scenes returned — try again.');
@@ -1038,8 +1053,13 @@ function renderLib(){
   if(!LIB.length){el.innerHTML='<p class="sub" style="margin-top:14px">No results yet — analyze something above.</p>';return}
   el.innerHTML=LIB.map((r,i)=>`<div class="rescard">
     <div class="rhead">${r.thumb?`<img class="thumb" src="${r.thumb}">`:''}<div><div class="rtitle">${esc(r.title)}</div><div class="rmeta">${esc(r.file)} · ${esc(r.kind)} · ${esc(r.target)} · ${esc(r.style)} · via ${esc(r.prov)}</div></div></div>
-    ${r.prompt?`<label class="lbl">Prompt (editable)</label><textarea id="lp${i}">${esc(r.prompt)}</textarea>`:''}
+    ${r.prompt&&r.kind!=='dual'?`<label class="lbl">Prompt (editable)</label><textarea id="lp${i}">${esc(r.prompt)}</textarea>`:''}
     ${r.prompt&&r.neg?`<label class="lbl">Negative prompt</label><textarea id="ln${i}">${esc(r.neg)}</textarea>`:''}
+    ${r.kind==='dual'?`
+      <label class="lbl">🎬 Replica — exact video prompt</label><textarea id="dr${i}">${esc(r.prompt||'')}</textarea>
+      <div class="btnrow"><button class="btn sm ghost" onclick="copyT('dr${i}')">Copy replica</button></div>
+      <label class="lbl">✨ Alternative story prompt</label><textarea id="da${i}">${esc(r.altPrompt||'')}</textarea>
+      <div class="btnrow"><button class="btn sm ghost" onclick="copyT('da${i}')">Copy alternative</button></div>`:''}
     ${r.scenes?r.scenes.map((s,si)=>{
       const neg=Array.isArray(s.negative_prompt)?s.negative_prompt.join(', '):(s.negative_prompt||'');
       const tl=Array.isArray(s.timeline)?s.timeline.map(t=>`<div class="tlrow"><b>${esc(t.time||'')}</b><span>${esc(t.action||'')}</span>${t.dialogue&&t.dialogue!=='None'?`<i>🗣 ${esc(t.dialogue)}</i>`:''}${t.sfx_cue?`<em>🔊 ${esc(t.sfx_cue)}</em>`:''}</div>`).join(''):'';
@@ -1096,6 +1116,8 @@ function fullReport(){
         const tl=Array.isArray(sc.timeline)?sc.timeline.map(t=>`  [${t.time||''}] ${t.action||''}${t.dialogue&&t.dialogue!=='None'?' | DIALOGUE: '+t.dialogue:''}${t.sfx_cue?' | SFX: '+t.sfx_cue:''}`).join('\n'):'';
         return `\n----- ${sc.scene_number||('Scene '+(si+1))} (${sc.time_window||''}) -----\nPROMPT:\n${sc.prompt||''}\n\nTIMELINE:\n${tl}\n\nNEGATIVE:\n${neg}\n`;
       }).join('\n');
+    }else if(r.kind==='dual'){
+      s+=`\nREPLICA PROMPT:\n${r.prompt||'(none)'}\n\nALTERNATIVE STORY PROMPT:\n${r.altPrompt||'(none)'}\n`;
     }else{
       s+=`\nPROMPT:\n${r.prompt||'(none)'}\n\nNEGATIVE PROMPT:\n${r.neg||'(none)'}\n\nKEYWORDS:\n${(r.keywords||[]).join(', ')}\n\nCATEGORY: ${r.category||'—'}\nDESCRIPTION: ${r.description||'—'}\n`;
     }
