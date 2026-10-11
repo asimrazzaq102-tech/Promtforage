@@ -5,117 +5,215 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PromptForge — Turn Any Media Into Production AI Prompts</title>
 <meta name="description" content="PromptForge reverse-engineers any image or video into production-ready AI generation prompts plus stock-ready metadata. Free, runs in your browser, bring your own API key.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0e14; --bg2:#0f1520; --card:#131b2a; --card2:#182234;
-  --border:#243049; --text:#e8eef7; --muted:#8b98ad;
-  --accent:#7c5cff; --accent2:#22d3ee; --grad:linear-gradient(135deg,#7c5cff,#22d3ee);
+  --bg:#04060c; --bg2:#0a0f1c;
+  --card:rgba(255,255,255,.028); --card2:rgba(255,255,255,.05);
+  --border:rgba(255,255,255,.09); --border2:rgba(255,255,255,.14);
+  --text:#eef2fa; --muted:#93a0b8;
+  --accent:#8b5cf6; --accent2:#22d3ee;
+  --grad:linear-gradient(135deg,#a78bfa 0%,#8b5cf6 45%,#22d3ee 100%);
   --green:#34d399; --red:#f87171; --amber:#fbbf24;
-  --radius:14px;
+  --radius:20px;
+  --font-d:'Space Grotesk',system-ui,sans-serif;
+  --font-b:'Inter',system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.6;min-height:100vh}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.6;min-height:100vh;overflow-x:hidden}
 a{color:var(--accent2)}
-.container{max-width:1080px;margin:0 auto;padding:0 20px}
+::selection{background:rgba(139,92,246,.4)}
+.container{max-width:1120px;margin:0 auto;padding:0 22px;position:relative;z-index:2}
+
+/* ambient background */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(110px);opacity:.42;animation:drift 22s ease-in-out infinite alternate}
+.orb.o1{width:560px;height:560px;left:-160px;top:-140px;background:radial-gradient(circle,#7c3aed,transparent 65%)}
+.orb.o2{width:520px;height:520px;right:-140px;top:22%;background:radial-gradient(circle,#0e7490,transparent 65%);animation-delay:-8s}
+.orb.o3{width:620px;height:620px;left:24%;bottom:-260px;background:radial-gradient(circle,#4c1d95,transparent 65%);animation-delay:-14s;opacity:.35}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,50px) scale(1.12)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")}
+
 /* header */
-header{position:sticky;top:0;z-index:50;background:rgba(10,14,20,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.hd{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-.logo{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-nav{display:flex;gap:22px}
-nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600}
+header{position:sticky;top:0;z-index:50;background:rgba(4,6,12,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:15px 0}
+.logo{font-family:var(--font-d);font-size:22px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.3px}
+.logo::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--grad);margin-right:9px;box-shadow:0 0 14px rgba(139,92,246,.9);vertical-align:2px}
+nav{display:flex;gap:26px}
+nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s;position:relative}
 nav a:hover{color:var(--text)}
+nav a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;background:var(--grad);border-radius:2px;transition:width .25s}
+nav a:hover::after{width:100%}
+
 /* hero */
-.hero{text-align:center;padding:64px 0 36px}
-.hero h1{font-size:clamp(30px,5vw,52px);font-weight:800;line-height:1.15;margin-bottom:14px}
+.hero{text-align:center;padding:88px 0 44px;position:relative}
+.badge{display:inline-flex;align-items:center;gap:9px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.35);color:#c4b5fd;font-size:12px;font-weight:700;padding:7px 17px;border-radius:99px;margin-bottom:24px;letter-spacing:1.6px}
+.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-family:var(--font-d);font-size:clamp(34px,6vw,66px);font-weight:700;line-height:1.08;letter-spacing:-1.5px;margin-bottom:20px}
 .hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{color:var(--muted);max-width:640px;margin:0 auto 8px;font-size:17px}
-.badge{display:inline-block;background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.4);color:#c4b5fd;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:18px;letter-spacing:.5px}
-/* cards & sections */
-section{padding:34px 0}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:22px}
-.card h2{font-size:21px;margin-bottom:6px}
-.card .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
-label.lbl{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:14px 0 6px;letter-spacing:.4px;text-transform:uppercase}
-input[type=text],input[type=password],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{min-height:110px;resize:vertical}
-.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-@media(max-width:760px){.row{grid-template-columns:1fr}}
+.hero .lead{color:var(--muted);max-width:660px;margin:0 auto 30px;font-size:17px}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.stat{display:inline-flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--text);backdrop-filter:blur(8px);transition:transform .2s,border-color .2s}
+.stat:hover{transform:translateY(-2px);border-color:var(--border2)}
+.stat .ic{font-size:16px}
+
+/* sections & cards */
+section{padding:30px 0;scroll-margin-top:90px}
+.card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:8px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 24px 70px rgba(0,0,0,.5);transition:transform .3s,box-shadow .3s,border-color .3s;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,.5),transparent)}
+.card:hover{transform:translateY(-3px);box-shadow:0 30px 80px rgba(0,0,0,.55);border-color:var(--border2)}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:2.6px;color:var(--accent2);margin-bottom:10px}
+.card h2{font-family:var(--font-d);font-size:25px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px}
+.card .sub{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+label.lbl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:18px 0 8px;letter-spacing:1.2px;text-transform:uppercase}
+input[type=text],input[type=password],select,textarea{width:100%;background:rgba(4,8,18,.7);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:13px 15px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+textarea{min-height:110px;resize:vertical;line-height:1.55}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2393a0b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .keywrap{position:relative}
-.keywrap .st{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px}
-.st.ok{background:rgba(52,211,153,.15);color:var(--green)}
-.st.no{background:rgba(248,113,113,.12);color:var(--red)}
+.keywrap .st{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:4px 11px;border-radius:99px;white-space:nowrap}
+.st.ok{background:rgba(52,211,153,.14);color:var(--green);border:1px solid rgba(52,211,153,.3)}
+.st.no{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.28)}
+.keyhint{font-size:12px;color:var(--muted);margin-top:7px}
+
 /* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--grad);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s,opacity .12s}
-.btn:hover{transform:translateY(-1px)}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.btn.ghost{background:var(--card2);border:1px solid var(--border);color:var(--text)}
-.btn.sm{padding:8px 16px;font-size:13px}
-.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-/* pills & tabs */
-.pills{display:flex;gap:10px;flex-wrap:wrap}
-.pill{padding:10px 20px;border-radius:99px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;user-select:none}
-.pill.on{background:var(--grad);color:#fff;border-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--grad);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s,opacity .18s;box-shadow:0 10px 28px rgba(139,92,246,.35)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(139,92,246,.5)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);box-shadow:none}
+.btn.ghost:hover{border-color:var(--border2);background:rgba(255,255,255,.08);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.btn.sm{padding:9px 18px;font-size:13px;border-radius:10px}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+
+/* segmented pills */
+.pills{display:inline-flex;background:rgba(4,8,18,.6);border:1px solid var(--border);border-radius:15px;padding:5px;gap:5px;flex-wrap:wrap;max-width:100%}
+.pill{padding:10px 20px;border-radius:11px;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;user-select:none;transition:all .22s;border:1px solid transparent;white-space:nowrap}
+.pill:hover{color:var(--text)}
+.pill.on{background:var(--grad);color:#fff;box-shadow:0 5px 18px rgba(139,92,246,.45);font-weight:700}
+
 /* dropzone */
-.drop{border:2px dashed var(--border);border-radius:var(--radius);padding:44px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-top:8px}
-.drop:hover,.drop.over{border-color:var(--accent);background:rgba(124,92,255,.06)}
-.drop .big{font-size:40px;margin-bottom:10px}
+.drop{border:1.5px dashed rgba(139,92,246,.5);border-radius:18px;padding:54px 22px;text-align:center;cursor:pointer;transition:all .25s;margin-top:8px;background:rgba(139,92,246,.04);position:relative;overflow:hidden}
+.drop:hover{border-color:var(--accent2);background:rgba(34,211,238,.05)}
+.drop.over{border-color:var(--accent2);background:rgba(34,211,238,.08);box-shadow:0 0 0 5px rgba(34,211,238,.1),0 0 50px rgba(34,211,238,.18);transform:scale(1.008)}
+.drop .big{font-size:46px;margin-bottom:12px;animation:floaty 3.4s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .drop p{color:var(--muted);font-size:14px}
-.queue{margin-top:14px;display:flex;flex-direction:column;gap:8px}
-.qitem{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px}
-.qitem img,.qitem video{width:52px;height:52px;object-fit:cover;border-radius:8px;background:#000}
-.qitem .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.qitem .st2{font-size:12px;font-weight:700;color:var(--muted)}
-.qitem .st2.run{color:var(--amber)} .qitem .st2.done{color:var(--green)} .qitem .st2.err{color:var(--red)}
-.qitem .rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:18px}
+.drop p b{color:var(--text)}
+.queue{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.qitem{display:flex;align-items:center;gap:13px;background:rgba(4,8,18,.55);border:1px solid var(--border);border-radius:14px;padding:10px 15px;font-size:14px;animation:slidein .3s ease}
+@keyframes slidein{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.qitem img,.qitem video{width:54px;height:54px;object-fit:cover;border-radius:10px;background:#000;border:1px solid var(--border)}
+.qitem .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.qitem .st2{font-size:11px;font-weight:800;letter-spacing:.6px;padding:5px 13px;border-radius:99px;background:rgba(255,255,255,.06);color:var(--muted)}
+.qitem .st2.run{color:var(--amber);background:rgba(251,191,36,.12);animation:pulse 1.4s infinite}
+.qitem .st2.done{color:var(--green);background:rgba(52,211,153,.12)}
+.qitem .st2.err{color:var(--red);background:rgba(248,113,113,.12)}
+.qitem .rm{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);cursor:pointer;font-size:16px;width:30px;height:30px;border-radius:9px;line-height:1;transition:.2s}
+.qitem .rm:hover{background:rgba(248,113,113,.18)}
+
 /* progress */
-.prog{height:8px;background:var(--bg2);border-radius:99px;overflow:hidden;margin-top:16px;display:none}
-.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width .3s}
-.status{font-size:14px;color:var(--muted);margin-top:10px;min-height:22px}
+.prog{height:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:99px;overflow:hidden;margin-top:18px;display:none}
+.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width .35s;position:relative;overflow:hidden;border-radius:99px}
+.prog i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:shimmer 1.5s infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+.status{font-size:14px;color:var(--muted);margin-top:12px;min-height:24px}
+
 /* results */
-.rescard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px}
+#lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;margin-top:20px}
+#lib>.sub{grid-column:1/-1}
+.rescard{background:rgba(4,8,18,.55);border:1px solid var(--border);border-radius:16px;padding:20px;transition:transform .25s,border-color .25s,box-shadow .25s;animation:slidein .35s ease}
+.rescard:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:0 16px 44px rgba(0,0,0,.45)}
 .rescard .rhead{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
-.rescard .thumb{width:74px;height:74px;object-fit:cover;border-radius:10px;background:#000;flex-shrink:0}
-.rescard .rtitle{font-weight:800;font-size:16px}
-.rescard .rmeta{font-size:12px;color:var(--muted)}
-.rescard textarea{min-height:120px;font-size:14px;margin:8px 0}
-.tagbox{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.tag{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:#a5f3fc;font-size:12px;padding:3px 10px;border-radius:99px}
-.kv{font-size:13px;color:var(--muted);margin:4px 0}.kv b{color:var(--text)}
+.rescard .thumb{width:76px;height:76px;object-fit:cover;border-radius:12px;background:#000;flex-shrink:0;border:1px solid var(--border)}
+.rescard .rtitle{font-family:var(--font-d);font-weight:700;font-size:16px;letter-spacing:-.2px}
+.rescard .rmeta{font-size:12px;color:var(--muted);margin-top:3px}
+.rescard textarea{min-height:120px;font-size:13.5px;margin:8px 0;background:rgba(4,8,18,.7)}
+.tagbox{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.tag{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.28);color:#a5f3fc;font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px;transition:.2s}
+.tag:hover{background:rgba(34,211,238,.16)}
+.kv{font-size:13px;color:var(--muted);margin:5px 0}.kv b{color:var(--text)}
+
 /* faq */
-.faq{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
-.faq q{display:block;padding:16px 18px;cursor:pointer;font-weight:700;quotes:none}
+.faq{border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(4,8,18,.4);transition:border-color .25s}
+.faq:hover{border-color:var(--border2)}
+.faq q{display:block;padding:17px 20px;cursor:pointer;font-weight:600;font-size:15px;quotes:none;list-style:none}
 .faq q::-webkit-details-marker{display:none}
-.faq q::after{content:"+";float:right;color:var(--accent2);font-size:20px}
-.faq[open] q::after{content:"–"}
-.faq .a{padding:0 18px 18px;color:var(--muted);font-size:14px}
+.faq q::after{content:"+";float:right;color:var(--accent2);font-size:22px;font-weight:300;line-height:1;transition:transform .3s}
+.faq[open] q::after{transform:rotate(45deg)}
+.faq .a{padding:0 20px 20px;color:var(--muted);font-size:14px;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
 /* footer */
-footer{border-top:1px solid var(--border);padding:30px 0;text-align:center;color:var(--muted);font-size:13px}
-.note{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.35);color:#fde68a;border-radius:10px;padding:12px 16px;font-size:13px;margin-top:14px}
-input[type=range]{width:100%;accent-color:var(--accent)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:760px){.grid2{grid-template-columns:1fr}nav{display:none}}
+footer{border-top:1px solid var(--border);padding:36px 0;margin-top:26px;text-align:center;color:var(--muted);font-size:13px;position:relative;z-index:2}
+footer .flogo{font-family:var(--font-d);font-weight:700;font-size:17px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.note{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.3);color:#fde68a;border-radius:14px;padding:14px 18px;font-size:13px;margin-top:18px;line-height:1.6}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:rgba(255,255,255,.09);outline:none;margin:10px 0;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--grad);box-shadow:0 4px 14px rgba(139,92,246,.6);cursor:grab;border:2px solid rgba(255,255,255,.25)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#8b5cf6;border:2px solid rgba(255,255,255,.25);cursor:grab}
+
+/* toast */
+#toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,18px);opacity:0;background:rgba(8,12,24,.94);border:1px solid var(--border2);color:var(--text);padding:14px 24px;border-radius:15px;font-weight:600;font-size:14px;z-index:99;pointer-events:none;transition:all .32s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 18px 50px rgba(0,0,0,.6);backdrop-filter:blur(14px);max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:860px){
+  .row{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  nav{display:none}
+  .hero{padding:60px 0 32px}
+  .card{padding:24px 20px}
+  #lib{grid-template-columns:1fr}
+  .stats{gap:8px}
+  .stat{padding:8px 14px;font-size:12.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .orb,.drop .big,.badge .dot,.prog i::after{animation:none}
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
 </style>
 </head>
 <body>
+<div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div class="grain"></div>
+
 <header><div class="container hd">
-  <div class="logo">⚡ PromptForge</div>
-  <nav><a href="#analyzer">Analyzer</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#faq">FAQ</a></nav>
+  <div class="logo">PromptForge</div>
+  <nav><a href="#keys">API Keys</a><a href="#analyzer">Analyzer</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#faq">FAQ</a></nav>
 </div></header>
+
 <div class="container">
-<div class="hero">
-  <div class="badge">FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
+
+<div class="hero reveal">
+  <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
   <h1>Turn Any Media Into <span>Production AI Prompts</span></h1>
-  <p>Drop a video or image — get a ready-to-generate prompt for Veo, Midjourney, Flux &amp; more, plus stock-ready title, keywords &amp; category metadata. Everything runs in your browser.</p>
+  <p class="lead">Drop a video or image — get a ready-to-generate prompt for Veo, Midjourney, Flux &amp; more, plus stock-ready title, keywords &amp; category metadata. Everything runs in your browser.</p>
+  <div class="stats">
+    <div class="stat"><span class="ic">🔒</span>100% client-side</div>
+    <div class="stat"><span class="ic">🤖</span>3 AI providers</div>
+    <div class="stat"><span class="ic">📊</span>Stock CSV export</div>
+  </div>
 </div>
+
 <!-- API KEYS -->
-<section id="keys"><div class="card">
-  <h2>🔑 API Keys</h2>
-  <p class="sub">Add at least one key to begin. Keys are stored only in your browser (localStorage) — never sent anywhere except the AI provider you choose.</p>
+<section id="keys"><div class="card reveal">
+  <div class="eyebrow">SETUP</div>
+  <h2>API Keys</h2>
+  <p class="sub">Add at least one key to begin. Keys are stored only in your browser (localStorage) — never sent anywhere except the AI provider you choose. <b>Pro tip:</b> paste multiple keys separated by commas — PromptForge rotates between them and auto-skips any key that hits a rate limit.</p>
   <div class="row">
-    <div><label class="lbl">Google Gemini</label><div class="keywrap"><input type="password" id="k_gemini" placeholder="AIza..." autocomplete="off"><span class="st no" id="s_gemini">MISSING</span></div></div>
-    <div><label class="lbl">Groq</label><div class="keywrap"><input type="password" id="k_groq" placeholder="gsk_..." autocomplete="off"><span class="st no" id="s_groq">MISSING</span></div></div>
-    <div><label class="lbl">OpenRouter</label><div class="keywrap"><input type="password" id="k_openrouter" placeholder="sk-or-..." autocomplete="off"><span class="st no" id="s_openrouter">MISSING</span></div></div>
+    <div><label class="lbl">Google Gemini</label><div class="keywrap"><input type="password" id="k_gemini" placeholder="AIza... , AIza... (comma-separated)" autocomplete="off"><span class="st no" id="s_gemini">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
+    <div><label class="lbl">Groq</label><div class="keywrap"><input type="password" id="k_groq" placeholder="gsk_... , gsk_... (comma-separated)" autocomplete="off"><span class="st no" id="s_groq">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
+    <div><label class="lbl">OpenRouter</label><div class="keywrap"><input type="password" id="k_openrouter" placeholder="sk-or-... (comma-separated)" autocomplete="off"><span class="st no" id="s_openrouter">MISSING</span></div><div class="keyhint">Comma-separated = auto rotation</div></div>
   </div>
   <div class="btnrow">
     <button class="btn sm" onclick="saveKeys()">Save keys</button>
@@ -125,14 +223,15 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 </div></section>
 
 <!-- ANALYZER -->
-<section id="analyzer"><div class="card">
-  <h2>🎬 Media Analyzer</h2>
+<section id="analyzer"><div class="card reveal">
+  <div class="eyebrow">ANALYZE</div>
+  <h2>Media Analyzer</h2>
   <p class="sub">Upload videos or images — get production prompts + stock metadata.</p>
   <label class="lbl">Mode</label>
   <div class="pills" id="modePills">
-    <div class="pill on" data-v="video">Video to Prompt</div>
-    <div class="pill" data-v="image">Image to Prompt</div>
-    <div class="pill" data-v="meta">Metadata Only</div>
+    <div class="pill on" data-v="video">🎬 Video to Prompt</div>
+    <div class="pill" data-v="image">🖼️ Image to Prompt</div>
+    <div class="pill" data-v="meta">🏷️ Metadata Only</div>
   </div>
   <label class="lbl">Style</label>
   <div class="pills" id="stylePills">
@@ -161,13 +260,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 </div></section>
 
 <!-- PROMPT LAB -->
-<section id="lab"><div class="card">
-  <h2>🧪 Prompt Lab</h2>
+<section id="lab"><div class="card reveal">
+  <div class="eyebrow">CREATE</div>
+  <h2>Prompt Lab</h2>
   <p class="sub">Work from typed text instead of a file.</p>
   <div class="pills" id="labPills">
-    <div class="pill on" data-v="enhance">Enhance</div>
+    <div class="pill on" data-v="enhance">✨ Enhance</div>
     <div class="pill" data-v="p2m">Prompt → Metadata</div>
-    <div class="pill" data-v="vari">Variations</div>
+    <div class="pill" data-v="vari">🔀 Variations</div>
   </div>
   <label class="lbl">Input</label>
   <textarea id="labin" placeholder="Type a rough idea, or paste an existing prompt..."></textarea>
@@ -179,8 +279,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 </div></section>
 
 <!-- LIBRARY -->
-<section id="library"><div class="card">
-  <h2>📚 Results Library</h2>
+<section id="library"><div class="card reveal">
+  <div class="eyebrow">COLLECTION</div>
+  <h2>Results Library</h2>
   <p class="sub">Every analysis lands here. Edit, copy or export.</p>
   <div class="btnrow">
     <button class="btn sm ghost" onclick="exportCSV('adobe')">⬇ Export Adobe Stock CSV</button>
@@ -191,47 +292,82 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 </div></section>
 
 <!-- FAQ -->
-<section id="faq"><div class="card">
-  <h2>❓ FAQ</h2><p class="sub"></p>
+<section id="faq"><div class="card reveal">
+  <div class="eyebrow">HELP</div>
+  <h2>FAQ</h2><p class="sub"></p>
   <details class="faq" open><q>What does PromptForge actually do?</q><div class="a">It studies your video or image and writes a production-ready generation prompt for AI tools like Veo, Midjourney or Flux — plus commercial title, keywords and category metadata ready for stock sites like Adobe Stock or Shutterstock.</div></details>
   <details class="faq"><q>Is my media uploaded anywhere?</q><div class="a">No. Files are processed in your browser. The only network call containing your media goes to the AI provider whose key you added (Gemini, Groq or OpenRouter). There is no PromptForge server.</div></details>
   <details class="faq"><q>Which provider should I use?</q><div class="a">Gemini is the best all-rounder — it's the only one that reads actual video motion. Groq and OpenRouter work from sampled keyframes for video, but are equally capable for images. All have free tiers.</div></details>
   <details class="faq"><q>Recreate vs Inspire — what's the difference?</q><div class="a"><b>Recreate</b> reverse-engineers the exact asset into a prompt that rebuilds it. <b>Inspire</b> studies only the style — mood, palette, lighting, camera language — and writes a prompt for a brand-new original scene in that style, never naming artists or copying the original.</div></details>
+  <details class="faq"><q>Can I add more than one API key?</q><div class="a">Yes — paste several keys separated by commas in any provider field. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
   <details class="faq"><q>Can I process many files at once?</q><div class="a">Yes. Drop multiple files and they queue up; PromptForge runs them one at a time to stay under free-tier rate limits, and every result lands in your library as its own card.</div></details>
   <details class="faq"><q>Is PromptForge free?</q><div class="a">Yes. The app itself is free and open — you bring your own API key from a provider with a free tier. PromptForge never asks for payment or an account.</div></details>
 </div></section>
 </div>
-<footer>⚡ PromptForge — free &amp; open. Your keys stay in your browser.</footer>
+
+<footer><div class="flogo">PromptForge</div>Free &amp; open. Your keys stay in your browser.</footer>
+<div id="toast"></div>
 <script>
 /* ============ helpers & state ============ */
 const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function setStatus(t){$('status').textContent=t||''}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
 function pillWire(id,cb){const el=$(id);el.querySelectorAll('.pill').forEach(p=>p.onclick=()=>{el.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');cb&&cb(p.dataset.v)});}
 let MODE='video',STYLE='recreate',LAB='enhance';
 pillWire('modePills',v=>MODE=v);pillWire('stylePills',v=>STYLE=v);
 pillWire('labPills',v=>{LAB=v;$('variWrap').style.display=v==='vari'?'block':'none';});
 
-const K={get gemini(){return localStorage.getItem('pf_gemini')||''},get groq(){return localStorage.getItem('pf_groq')||''},get openrouter(){return localStorage.getItem('pf_openrouter')||''}};
+/* ============ multi-key support: comma-separated keys, round-robin rotation, 429 cooldown ============ */
+function getKeys(p){return (localStorage.getItem('pf_'+p)||'').split(',').map(s=>s.trim()).filter(Boolean)}
+const K={get gemini(){return getKeys('gemini')},get groq(){return getKeys('groq')},get openrouter(){return getKeys('openrouter')}};
+const RR={gemini:0,groq:0,openrouter:0};   /* round-robin cursors */
+const COOL={};                              /* key -> timestamp when cooldown ends */
 function refreshKeys(){
-  $('k_gemini').value=K.gemini;$('k_groq').value=K.groq;$('k_openrouter').value=K.openrouter;
-  const set=(id,ok)=>{const e=$(id);e.textContent=ok?'SAVED':'MISSING';e.className='st '+(ok?'ok':'no')};
-  set('s_gemini',!!K.gemini);set('s_groq',!!K.groq);set('s_openrouter',!!K.openrouter);
-  const any=!!(K.gemini||K.groq||K.openrouter);
+  $('k_gemini').value=localStorage.getItem('pf_gemini')||'';
+  $('k_groq').value=localStorage.getItem('pf_groq')||'';
+  $('k_openrouter').value=localStorage.getItem('pf_openrouter')||'';
+  const set=(id,n)=>{const e=$(id);e.textContent=n?n+' KEY'+(n>1?'S':''):'MISSING';e.className='st '+(n?'ok':'no')};
+  const cg=getKeys('gemini').length,cq=getKeys('groq').length,co=getKeys('openrouter').length;
+  set('s_gemini',cg);set('s_groq',cq);set('s_openrouter',co);
+  const any=!!(cg+cq+co);
   $('analyzeBtn').disabled=!any;$('labBtn').disabled=!any;
 }
-function saveKeys(){localStorage.setItem('pf_gemini',$('k_gemini').value.trim());localStorage.setItem('pf_groq',$('k_groq').value.trim());localStorage.setItem('pf_openrouter',$('k_openrouter').value.trim());refreshKeys();setStatus('Keys saved in this browser.');}
+function saveKeys(){localStorage.setItem('pf_gemini',$('k_gemini').value.trim());localStorage.setItem('pf_groq',$('k_groq').value.trim());localStorage.setItem('pf_openrouter',$('k_openrouter').value.trim());refreshKeys();setStatus('Keys saved in this browser.');toast('Keys saved ✓')}
 function clearKeys(){['pf_gemini','pf_groq','pf_openrouter'].forEach(k=>localStorage.removeItem(k));refreshKeys();setStatus('Keys cleared.');}
+/* returns {provider, key} — next healthy key in round-robin order */
 function pickProvider(want){
   const order=want==='auto'?['gemini','groq','openrouter']:[want];
-  for(const p of order){if(K[p])return p}
+  const now=Date.now();
+  for(const p of order){
+    const keys=getKeys(p).filter(k=>!COOL[k]||now>COOL[k]);
+    if(keys.length){const key=keys[RR[p]%keys.length];RR[p]++;return {provider:p,key}}
+  }
   return null;
+}
+/* runs fn(sel) with key rotation: on 429/rate-limit the key cools down 90s and we try the next */
+async function resilientCall(want,fn){
+  const tried=new Set();
+  for(let i=0;i<8;i++){
+    const sel=pickProvider(want);
+    if(!sel)throw new Error('Add at least one API key first.');
+    const id=sel.provider+'|'+sel.key.slice(-8);
+    if(tried.has(id))break;
+    tried.add(id);
+    try{return await fn(sel)}
+    catch(e){
+      if(/429|rate.?limit|RESOURCE_EXHAUSTED/i.test(e.message||'')){COOL[sel.key]=Date.now()+90000;continue}
+      throw e;
+    }
+  }
+  throw new Error('All keys are rate-limited right now. Wait a minute and retry.');
 }
 
 /* ============ provider clients ============ */
-async function callGemini(parts,model){
-  const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(K.gemini)}`;
+async function callGemini(parts,model,key){
+  key=key||getKeys('gemini')[0];
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
   const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.7,maxOutputTokens:4096}})});
   if(!r.ok)throw new Error('Gemini error '+r.status+': '+(await r.text()).slice(0,200));
   const j=await r.json();
@@ -247,8 +383,8 @@ async function callOpenAICompat(url,key,model,messages){
   if(!t)throw new Error('Provider returned no text.');
   return t;
 }
-const callGroq=msgs=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions',K.groq,'meta-llama/llama-4-scout-17b-16e-instruct',msgs);
-const callOR=msgs=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions',K.openrouter,'meta-llama/llama-4-scout-17b-16e-instruct:free',msgs);
+const callGroq=(msgs,key)=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions',key||getKeys('groq')[0],'meta-llama/llama-4-scout-17b-16e-instruct',msgs);
+const callOR=(msgs,key)=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions',key||getKeys('openrouter')[0],'meta-llama/llama-4-scout-17b-16e-instruct:free',msgs);
 const fileToB64=file=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(file);});
 const fileToURL=file=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(file);});
 
@@ -321,36 +457,35 @@ function renderQueue(){
 function rmQ(id){QUEUE=QUEUE.filter(q=>q.id!==id);renderQueue()}
 function clearQueue(){QUEUE=[];renderQueue();setStatus('');$('prog').style.display='none'}
 async function runQueue(){
-  const prov=pickProvider($('provider').value);
-  if(!prov){setStatus('Add at least one API key first.');return}
+  const sel=pickProvider($('provider').value);
+  if(!sel){setStatus('Add at least one API key first.');return}
   $('analyzeBtn').disabled=true;$('prog').style.display='block';
   let i=0;
   for(const q of QUEUE){
     if(q.st==='done')continue;
     i++;q.st='run';renderQueue();
     $('progbar').style.width=Math.round(i/QUEUE.length*90)+'%';
-    setStatus(`Analyzing ${i}/${QUEUE.length}: ${q.file.name} (${prov})…`);
-    try{await analyzeOne(q,prov);q.st='done'}
+    setStatus(`Analyzing ${i}/${QUEUE.length}: ${q.file.name} (${sel.provider})…`);
+    try{await analyzeOne(q,sel);q.st='done'}
     catch(e){q.st='err';setStatus('Error on '+q.file.name+': '+e.message)}
     renderQueue();await sleep(1200);
   }
   $('progbar').style.width='100%';setStatus('Done — results are in the Library below.');
   $('analyzeBtn').disabled=false;setTimeout(()=>$('prog').style.display='none',1500);
 }
-async function analyzeOne(q,prov){
+async function analyzeOne(q,sel){
   const kind=MODE==='meta'?'meta':(q.file.type.startsWith('video')?'video':'image');
   const target=$('target').value,instr=buildAnalyze(kind,target,STYLE);
-  let text;
-  if(prov==='gemini'){
-    const b64=await fileToB64(q.file);
-    const parts=[{text:instr},{inlineData:{mimeType:q.file.type,data:b64}}];
-    text=await callGemini(parts,$('gmodel').value);
-  }else{
-    const msgs=await buildVisionMessages(q,instr,prov);
-    text=prov==='groq'?await callGroq(msgs):await callOR(msgs);
-  }
+  const text=await resilientCall(sel.provider,async s=>{
+    if(s.provider==='gemini'){
+      const b64=await fileToB64(q.file);
+      return await callGemini([{text:instr},{inlineData:{mimeType:q.file.type,data:b64}}],$('gmodel').value,s.key);
+    }
+    const msgs=await buildVisionMessages(q,instr,s.provider);
+    return s.provider==='groq'?await callGroq(msgs,s.key):await callOR(msgs,s.key);
+  });
   const d=parseJSON(text);
-  saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:STYLE,prov,
+  saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:STYLE,prov:sel.provider,
     prompt:d.prompt||'',title:d.title||q.file.name,keywords:Array.isArray(d.keywords)?d.keywords:[],category:d.category||'',description:d.description||'',ts:Date.now()});
 }
 async function buildVisionMessages(q,instr,prov){
@@ -366,17 +501,19 @@ async function buildVisionMessages(q,instr,prov){
 }
 /* ============ prompt lab ============ */
 async function runLab(){
-  const prov=pickProvider($('provider').value);
-  if(!prov){$('labstatus').textContent='Add at least one API key first.';return}
+  const sel=pickProvider($('provider').value);
+  if(!sel){$('labstatus').textContent='Add at least one API key first.';return}
   const input=$('labin').value.trim();
   if(!input){$('labstatus').textContent='Type something first.';return}
   $('labBtn').disabled=true;$('labstatus').textContent='Working…';$('labout').innerHTML='';
   try{
     const n=+$('variCount').value;
     const instr=buildLab(LAB,$('target').value,input,n);
-    let text;
-    if(prov==='gemini')text=await callGemini([{text:instr}],$('gmodel').value);
-    else{const m=[{role:'user',content:instr}];text=prov==='groq'?await callGroq(m):await callOR(m)}
+    const text=await resilientCall(sel.provider,async s=>{
+      if(s.provider==='gemini')return await callGemini([{text:instr}],$('gmodel').value,s.key);
+      const m=[{role:'user',content:instr}];
+      return s.provider==='groq'?await callGroq(m,s.key):await callOR(m,s.key);
+    });
     const d=parseJSON(text);
     if(LAB==='vari'){
       $('labout').innerHTML=(d.variations||[]).map((v,i)=>`<div class="rescard"><div class="rtitle">Variation ${i+1}</div><textarea id="lv${i}">${esc(v)}</textarea><div class="btnrow"><button class="btn sm ghost" onclick="copyT('lv${i}')">Copy</button><button class="btn sm ghost" onclick="labToLib(${i})">Save to library</button></div></div>`).join('');
@@ -394,8 +531,8 @@ async function runLab(){
   }catch(e){$('labstatus').textContent='Error: '+e.message}
   $('labBtn').disabled=false;
 }
-function copyT(id){navigator.clipboard.writeText($(id).value).then(()=>{$('labstatus').textContent='Copied.'})}
-function copyMetaLab(){const d=window._labMeta||{};navigator.clipboard.writeText(`${d.title||''}\n${(d.keywords||[]).join(', ')}\n${d.category||''}\n${d.description||''}`).then(()=>$('labstatus').textContent='Copied.')}
+function copyT(id){navigator.clipboard.writeText($(id).value).then(()=>{toast('Copied ✓')})}
+function copyMetaLab(){const d=window._labMeta||{};navigator.clipboard.writeText(`${d.title||''}\n${(d.keywords||[]).join(', ')}\n${d.category||''}\n${d.description||''}`).then(()=>toast('Copied ✓'))}
 function labToLib(i){saveResult({file:'variation',thumb:'',kind:'text',target:$('target').value,style:'-',prov:'-',prompt:window._labVars[i]||'',title:'Variation '+(i+1),keywords:[],category:'',description:'',ts:Date.now()});}
 function labEnhToLib(){saveResult({file:'enhanced',thumb:'',kind:'text',target:$('target').value,style:'-',prov:'-',prompt:$('le0').value,title:'Enhanced prompt',keywords:[],category:'',description:'',ts:Date.now()});}
 
@@ -418,7 +555,7 @@ function renderLib(){
       <button class="btn sm ghost" onclick="delR(${i})">Delete</button>
     </div></div>`).join('');
 }
-function copyLP(i){const t=$('lp'+i);navigator.clipboard.writeText(t?t.value:LIB[i].prompt)}
+function copyLP(i){const t=$('lp'+i);navigator.clipboard.writeText(t?t.value:LIB[i].prompt).then(()=>toast('Copied ✓'))}
 function delR(i){LIB.splice(i,1);persistLib();renderLib()}
 function clearLib(){if(confirm('Clear all results?')){LIB=[];persistLib();renderLib()}}
 
@@ -426,7 +563,7 @@ function clearLib(){if(confirm('Clear all results?')){LIB=[];persistLib();render
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click()}
 function exportCSV(kind){
-  if(!LIB.length){alert('Library is empty.');return}
+  if(!LIB.length){toast('Library is empty — analyze something first.');return}
   let rows;
   if(kind==='adobe'){
     rows=[['Filename','Title','Keywords','Category','Releases'].join(',')];
@@ -437,10 +574,15 @@ function exportCSV(kind){
     LIB.forEach((r,i)=>rows.push([csvCell('pf_'+Date.now()+'_'+i+'.jpg'),csvCell(r.description||r.title),csvCell((r.keywords||[]).join(', ')),csvCell(r.category)].join(',')));
     download('promptforge_shutterstock.csv',rows.join('\n'));
   }
+  toast('CSV downloaded ✓');
 }
 
 /* ============ init ============ */
 refreshKeys();renderLib();
+
+/* reveal-on-scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
