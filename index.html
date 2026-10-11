@@ -964,7 +964,7 @@ function addFiles(list){
   renderQueue();
 }
 function renderQueue(){
-  $('queue').innerHTML=QUEUE.map(q=>`<div class="qitem">${q.file.type.startsWith('image')?`<img src="${q.thumb}">`:`<video src="${q.thumb}" muted></video>`}<span class="nm">${esc(q.file.name)}</span><span class="st2 ${q.st==='run'?'run':q.st==='done'?'done':q.st==='err'?'err':''}">${{wait:'QUEUED',run:'WORKING…',done:'DONE',err:'ERROR'}[q.st]}</span>${q.st==='wait'?`<button class="rm" onclick="rmQ('${q.id}')">×</button>`:''}</div>`).join('');
+  $('queue').innerHTML=QUEUE.map(q=>`<div class="qitem">${q.file.type.startsWith('image')?`<img src="${q.thumb}">`:`<video src="${q.thumb}" muted></video>`}<span class="nm">${esc(q.file.name)}${q.st==='err'&&q.err?`<br><small style="color:#f87171">${esc(q.err)}</small>`:''}</span><span class="st2 ${q.st==='run'?'run':q.st==='done'?'done':q.st==='err'?'err':''}">${{wait:'QUEUED',run:'WORKING…',done:'DONE',err:'ERROR'}[q.st]}</span>${q.st==='wait'?`<button class="rm" onclick="rmQ('${q.id}')">×</button>`:''}</div>`).join('');
   $('analyzeBtn').innerHTML='⚡ Analyze'+(QUEUE.length?` batch (${QUEUE.length})`:'');
 }
 function rmQ(id){QUEUE=QUEUE.filter(q=>q.id!==id);renderQueue()}
@@ -980,7 +980,7 @@ async function runQueue(){
     $('progbar').style.width=Math.round(i/QUEUE.length*90)+'%';
     setStatus(`Analyzing ${i}/${QUEUE.length}: ${q.file.name} (${sel.provider})…`);
     try{await analyzeOne(q,sel);q.st='done'}
-    catch(e){q.st='err';setStatus('Error on '+q.file.name+': '+e.message)}
+    catch(e){q.st='err';q.err=e.message;setStatus('Error on '+q.file.name+': '+e.message)}
     renderQueue();await sleep(1200);
   }
   $('progbar').style.width='100%';setStatus('Done — results are in the Library below.');
