@@ -963,18 +963,38 @@ function durNote(kind){
   if(kind!=='video')return '';
   return ' Detail level: MAXIMUM per-second detail for this short clip — describe action, camera and lighting second by second.';
 }
-function detailRules(){
-  return `Write DENSE shot-level visual detail, NOT a plot summary. Structure: cover the video's story beats IN ORDER, giving EACH beat 2-3 dense sentences (setting + characters + exact actions + light). Aim for roughly 60-80 words per 10 seconds of footage. Name concrete visible things: hair style and color, wardrobe (fabric, color, embroidery, drape), exact physical actions (never "frantically collects" — say HOW: "unpegs damp shirts, clutching them to her chest as wind whips her hair"), set materials (mud-brick, thatch, clay, wood), weather textures, light quality and color temperature. Every clause must describe something a camera would see. Never use abstract summarizing verbs like "documents", "shifting indoors", "together they" — describe the visible shot.`;
+function fileDuration(file){
+  return new Promise(res=>{
+    if(!file||!file.type||!file.type.startsWith('video'))return res(0);
+    try{
+      const v=document.createElement('video');v.preload='metadata';v.muted=true;
+      const url=URL.createObjectURL(file);v.src=url;
+      const done=d=>{URL.revokeObjectURL(url);res(d||0)};
+      v.onloadedmetadata=()=>done(v.duration);
+      v.onerror=()=>done(0);
+      setTimeout(()=>done(0),4000);
+    }catch(e){res(0)}
+  });
 }
-function buildAnalyze(kind,target,style){
+function detailRules(dur,unit){
+  const per10=70,n=Math.round(dur||0);
+  let words,label;
+  if(unit==='scene'){words=per10;label='EACH scene prompt'}
+  else if(n>0){words=Math.round(n/10*per10);label='EACH prompt'}
+  else{words=200;label='EACH prompt'}
+  const lo=Math.round(words*0.9),hi=Math.round(words*1.15);
+  const lenRule=`LENGTH — HARD REQUIREMENT, NOT A SUGGESTION:${n>0&&unit!=='scene'?` this video is ${n} seconds long.`:' '}` Write ${label} as ${lo}-${hi} words${n>0&&unit!=='scene'?` (about ${per10} words per 10 seconds)`:' '}. A shorter prompt is a FAILED response — keep adding concrete visible detail until you reach the count. Do not stop early, do not summarize to save space.`;
+  return `${lenRule} Write DENSE shot-level visual detail, NOT a plot summary. Cover the video's story beats IN ORDER, giving EACH beat 2-3 dense sentences (setting + characters + exact actions + light). Name concrete visible things: hair style and color, wardrobe (fabric, color, embroidery, drape), exact physical actions (never "frantically collects" — say HOW: "unpegs damp shirts, clutching them to her chest as wind whips her hair"), set materials (mud-brick, thatch, clay, wood), weather textures, light quality and color temperature. Every clause must describe something a camera would see. Never use abstract summarizing verbs like "documents", "shifting indoors", "together they" — describe the visible shot.`;
+}
+function buildAnalyze(kind,target,style,dur){
   if(kind==='dual'){
     const idea=($('altStory')&&$('altStory').value.trim())||'';
-    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${detailRules()} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}):
+    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${detailRules(dur,'prompt')} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}):
 1. "replica": faithfully replicates the EXACT video — same scenes in order, same subjects, actions, setting, mood and camera language.
 2. "alternative": the SAME video structure and approximate length, but a BRAND-NEW story: ${idea?`use this story idea: "${idea}"`:'invent an original, engaging story yourself'}. Keep the pacing and shot flow; change characters, setting, wardrobe, actions and dialogue (dialogue in the new story's natural language).
 Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"replica":"...","alternative":"..."}`;
   }
-  if(kind==='scenes')return `You are an expert AI video analyst and film director. ${detailRules()} Split the attached video into natural scenes of roughly 10 seconds each (if the input is a single image, produce exactly 1 scene). For EACH scene write a full production-ready breakdown.${styleNote()} Target generator: ${target}. Dialogue must be in the characters' natural spoken language (e.g. Hindi/Urdu for South Asian rural settings). Match technical.aspect_ratio to the media's own orientation (use 9:16 if vertical, 16:9 if horizontal).
+  if(kind==='scenes')return `You are an expert AI video analyst and film director. ${detailRules(dur,'scene')} Split the attached video into natural scenes of roughly 10 seconds each (if the input is a single image, produce exactly 1 scene). For EACH scene write a full production-ready breakdown.${styleNote()} Target generator: ${target}. Dialogue must be in the characters' natural spoken language (e.g. Hindi/Urdu for South Asian rural settings). Match technical.aspect_ratio to the media's own orientation (use 9:16 if vertical, 16:9 if horizontal).
 Return ONLY valid JSON, no markdown fences, no commentary. Schema:
 {"scenes":[{"scene_number":"Scene 1 of N · 0 sec to 10 sec","time_window":"0s – 10s","prompt":"full generation prompt for this scene","style":"e.g. Photorealistic cinematic live-action footage shot on 35mm film","scene":"location/set description","characters":[{"name":"...","appearance":"...","wardrobe":"...","action":"..."}],"camera":{"movement":"...","framing":"...","lens":"...","look":"..."},"lighting":{"key_light":"...","fill_and_ambient":"..."},"timeline":[{"time":"0.00s – 1.00s","action":"...","camera_motion":"...","dialogue":"...","sfx_cue":"..."}],"voice_over":{"language":"...","tone":"...","dialogue_log":[{"speaker":"...","text":"...","timestamp":"..."}]},"audio":{"ambient":"...","sfx":["..."],"music":"..."},"negative_prompt":["blurry","distorted anatomy","watermark","text overlay"],"technical":{"target_duration_sec":10,"aspect_ratio":"9:16","resolution":"720x1280"}}]}`;
   const rec=style==='recreate'
@@ -988,7 +1008,7 @@ Return ONLY valid JSON, no markdown fences, no commentary. Schema:
     const rich=DURATION==='1min';
     return `You are an expert AI video analyst. Analyze the attached video.${styleNote()} ${rec} ${baseRules(target)} ${detailRules()} Split it into natural scenes of roughly 10 seconds each, covering the clip's full length from start to end. For EACH scene write ${rich?'a richly detailed production prompt (full camera, lighting, action and mood detail)':'a compact 2-3 sentence prompt (action, camera, lighting, mood only — no filler)'}. Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"scenes":[{"scene_number":"Scene 1 of N","time_window":"0s – 10s","prompt":"...","negative_prompt":"..."}]}`;
   }
-  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)}${kind==='video'?' '+detailRules():''} ${kw} ${jsonAsk()}`;
+  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)}${kind==='video'?' '+detailRules(dur,'prompt'):''} ${kw} ${jsonAsk()}`;
 }
 function buildLab(tool,target,input,n){
   if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} Also include a negative_prompt: comma-separated list of things to AVOID (artifacts, distortions, bad anatomy, watermark, text, blur, low quality). Return ONLY valid JSON: {"prompt":"...","negative_prompt":"..."}\nIdea: ${input}`;
@@ -1042,8 +1062,8 @@ async function runQueue(){
 }
 async function analyzeOne(q,sel){
   const kind=MODE==='meta'?'meta':MODE==='scenes'?'scenes':MODE==='dual'?'dual':(q.file.type.startsWith('video')?'video':'image');
-  const target=$('target').value,instr=buildAnalyze(kind,target,STYLE);
-  const maxTok=(kind==='scenes'||(kind==='video'&&DURATION!=='10s'))?8192:undefined;
+  const target=$('target').value,dur=await fileDuration(q.file),instr=buildAnalyze(kind,target,STYLE,dur);
+  const maxTok=(kind==='scenes'||kind==='dual'||(kind==='video'&&DURATION!=='10s'))?8192:undefined;
   const text=await resilientCall(sel.provider,async s=>{
     if(s.provider==='gemini'){
       const b64=await fileToB64(q.file);
