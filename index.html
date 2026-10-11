@@ -355,7 +355,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <header><div class="container hd">
   <div class="logo">PromptForge</div>
-  <nav class="dnav"><a href="#analyzer">Analyzer</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#community">Community</a><a href="#faq">FAQ</a></nav>
+  <nav class="dnav"><a href="#analyzer">Analyzer</a><a href="#faceswap">Face Swap</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#community">Community</a><a href="#faq">FAQ</a></nav>
   <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
 </div></header>
 
@@ -364,6 +364,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <button class="dclose" onclick="closeMenu()" aria-label="Close menu">✕</button>
   <nav>
     <a href="#analyzer" onclick="closeMenu()">🎬 Analyzer</a>
+    <a href="#faceswap" onclick="closeMenu()">🔄 Face Swap</a>
     <a href="#lab" onclick="closeMenu()">🧪 Prompt Lab</a>
     <a href="#library" onclick="closeMenu()">📚 Library</a>
     <a href="#community" onclick="closeMenu()">👥 Community</a>
@@ -448,6 +449,46 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <input type="hidden" id="k_gemini"><input type="hidden" id="k_groq"><input type="hidden" id="k_openrouter">
 
   <div class="note">💡 Free tiers: get a Gemini key at <b>Google AI Studio</b> (aistudio.google.com) and a Groq key at <b>groq.com</b>. Only Gemini reads real video motion — other providers analyze sampled keyframes.</div>
+</div></section>
+
+<!-- FACE SWAP -->
+<section id="faceswap"><div class="card reveal">
+  <div class="cardhead">
+    <div><div class="eyebrow">AI STUDIO</div><h2>🔄 Face Swap</h2></div>
+    <span class="syspill" id="fsPill">● OFFLINE</span>
+  </div>
+  <p class="sub">Swap a face into any video — runs on <b>your own PC's GPU</b> (RTX 3060 ready). Nothing uploads to a third-party server. Keep videos under 30s.</p>
+
+  <div id="fsLock">
+    <label class="lbl">Your server URL</label>
+    <input type="text" id="fsUrl" placeholder="https://xxxx.trycloudflare.com">
+    <p class="sub">🔒 <b>Private feature.</b> Tap below — a 6-digit code goes to the owner's email. He shares it only with people he trusts. Code works once, for 10 minutes.</p>
+    <button class="btn primary" onclick="fsRequestCode()" style="margin-top:8px;width:100%">📩 Request access code</button>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="text" id="fsCode" placeholder="6-digit code" inputmode="numeric" maxlength="6" style="flex:1">
+      <button class="btn ghost" onclick="fsUnlock()">Unlock</button>
+    </div>
+    <div id="fsLockMsg" class="sub" style="margin-top:8px"></div>
+  </div>
+
+  <div id="fsMain" style="display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+    <div>
+      <label class="lbl">Target video</label>
+      <input type="file" id="fsVideo" accept="video/mp4,video/*">
+    </div>
+    <div>
+      <label class="lbl">Face photo</label>
+      <input type="file" id="fsFace" accept="image/*">
+    </div>
+  </div>
+
+  <button class="btn primary" id="fsBtn" onclick="fsSwap()" style="margin-top:16px;width:100%">🔄 Swap face</button>
+  <div id="fsStatus" class="sub" style="margin-top:10px"></div>
+  <div id="fsOut" style="margin-top:12px"></div>
+  <div class="btnrow" style="margin-top:10px"><button class="btn sm ghost" onclick="fsLock()">🔒 Lock</button></div>
+  </div>
+  <p class="sub" style="margin-top:12px">⚙️ First time? See <b>faceswap-server/README.md</b> in the repo — run <b>setup.bat</b> once on your PC, then <b>start.bat</b> + a Cloudflare Tunnel.</p>
 </div></section>
 
 <!-- SETTINGS -->
@@ -1121,6 +1162,74 @@ function renderLib(){
 function copyMain(i){navigator.clipboard.writeText(mainText(LIB[i])).then(()=>toast('Copied \u2713'))}
 function openResult(i){$('rmBody').innerHTML=detailHTML(LIB[i],i);$('rModal').style.display='flex';document.body.style.overflow='hidden'}
 function closeRModal(){$('rModal').style.display='none';document.body.style.overflow=''}
+
+/* ============ face swap (own GPU server, email-code locked) ============ */
+function fsShowMain(on){
+  $('fsLock').style.display=on?'none':'';
+  $('fsMain').style.display=on?'':'none';
+  const pill=$('fsPill');
+  if(on){pill.textContent='● UNLOCKED';pill.className='syspill ok'}
+  else{pill.textContent='● LOCKED';pill.className='syspill'}
+}
+function fsLock(){localStorage.removeItem('fs_token');fsShowMain(false);toast('Locked.')}
+function fsUrl(){return ($('fsUrl').value||'').trim().replace(/\/$/,'')}
+async function fsRequestCode(){
+  const url=fsUrl(),msg=$('fsLockMsg');
+  if(!url){msg.textContent='Enter the server URL first.';return}
+  localStorage.setItem('fs_url',url);
+  msg.textContent='Sending code to owner…';
+  try{
+    const r=await fetch(url+'/request-code',{method:'POST'});
+    const j=await r.json();
+    if(!r.ok)throw new Error(j.detail||'request failed');
+    msg.textContent='📩 '+j.msg;
+  }catch(e){msg.textContent='❌ '+e.message+' — is the server running?'}
+}
+async function fsUnlock(silent){
+  const url=fsUrl(),msg=$('fsLockMsg'),token=localStorage.getItem('fs_token')||'';
+  if(url&&token){
+    try{const r=await fetch(url+'/verify',{headers:{'X-API-Key':token}});
+      if(r.ok){fsShowMain(true);return true}}catch(e){}
+    localStorage.removeItem('fs_token');
+  }
+  const code=($('fsCode').value||'').trim();
+  if(!code){if(!silent)msg.textContent='Tap "Request access code" first, then enter the 6-digit code.';return false}
+  if(!url){if(!silent)msg.textContent='Enter the server URL first.';return false}
+  msg.textContent='Verifying…';
+  try{
+    const r=await fetch(url+'/verify-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    const j=await r.json();
+    if(!r.ok)throw new Error(j.detail||'verification failed');
+    localStorage.setItem('fs_url',url);localStorage.setItem('fs_token',j.token);
+    $('fsCode').value='';msg.textContent='';fsShowMain(true);
+    if(!silent)toast('Unlocked ✓ — valid 30 days on this device');
+    return true;
+  }catch(e){fsShowMain(false);msg.textContent='❌ '+(e.message||'wrong code');return false}
+}
+async function fsSwap(){
+  const url=fsUrl(),token=localStorage.getItem('fs_token')||'';
+  if(!url||!token){fsShowMain(false);toast('Unlock first.');return}
+  const vf=$('fsVideo').files[0],ff=$('fsFace').files[0];
+  if(!vf||!ff){toast('Pick a video AND a face photo.');return}
+  const st=$('fsStatus'),btn=$('fsBtn'),out=$('fsOut');
+  btn.disabled=true;out.innerHTML='';
+  st.textContent='Uploading… (this can take a minute for larger videos)';
+  try{
+    const fd=new FormData();fd.append('video',vf);fd.append('face',ff);
+    st.textContent='Swapping faces on your GPU… keep this tab open (1–3 min for a 10s clip)';
+    const r=await fetch(url+'/swap',{method:'POST',headers:{'X-API-Key':token},body:fd});
+    if(!r.ok)throw new Error('Server error '+r.status+': '+(await r.text()).slice(0,160));
+    const blob=await r.blob();
+    const url=URL.createObjectURL(blob);
+    st.textContent='Done ✓';
+    out.innerHTML=`<video src="${url}" controls style="width:100%;border-radius:12px"></video>
+      <div class="btnrow" style="margin-top:10px"><a class="btn sm ghost" href="${url}" download="faceswap.mp4">⬇ Download video</a></div>`;
+    toast('Face swap complete ✓');
+  }catch(e){st.textContent='Error: '+e.message}
+  btn.disabled=false;
+}
+(function(){const u=localStorage.getItem('fs_url');
+if(u){$('fsUrl').value=u;fsUnlock(true)}else fsShowMain(false)})();
 function detailHTML(r,i){
   return `<div class="rhead">${r.thumb?`<img class="thumb" src="${r.thumb}">`:''}<div><div class="rtitle">${esc(r.title)}</div><div class="rmeta">${esc(r.file)} \u00B7 ${esc(modeLabel(r.kind))} \u00B7 ${esc(r.target)} \u00B7 ${esc(r.style)} \u00B7 via ${esc(r.prov)}</div></div></div>
     ${r.prompt&&r.kind!=='dual'?`<label class="lbl">Prompt (editable)</label><textarea id="lp${i}">${esc(r.prompt)}</textarea>`:''}
