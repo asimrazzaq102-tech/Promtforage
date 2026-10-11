@@ -452,6 +452,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div class="pill" data-v="scenes">🎞️ SCENE BREAKDOWN</div>
     <div class="pill" data-v="lab">🧪 PROMPT LAB</div>
   </div>
+  <div id="altStoryWrap" style="display:none;margin-top:10px">
+    <label class="lbl" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px">
+      <input type="checkbox" id="altToggle" style="width:18px;height:18px;accent-color:#22d3ee;flex-shrink:0"> Also generate <b>&nbsp;alternative story&nbsp;</b> version (same scenes, brand-new story)
+    </label>
+    <input type="text" id="altStory" placeholder="Story idea (optional) — e.g. robot family in a future city. Empty = AI invents one." style="margin-top:8px">
+  </div>
 
   <label class="lbl">Preset</label>
   <div class="chips" id="presetPills">
@@ -656,6 +662,7 @@ pillWire('modePills',v=>{
   if(v==='lab'){document.getElementById('lab').scrollIntoView({behavior:'smooth'});
     document.querySelectorAll('#modePills .pill').forEach(x=>x.classList.toggle('on',x.dataset.v===MODE));return}
   MODE=v;
+  const aw=$('altStoryWrap');if(aw)aw.style.display=v==='scenes'?'block':'none';
 });
 pillWire('stylePills',v=>STYLE=v);
 pillWire('labPills',v=>{LAB=v;$('variWrap').style.display=v==='vari'?'block':'none';});
@@ -945,8 +952,17 @@ async function analyzeOne(q,sel){
   if(kind==='scenes'){
     const scenes=Array.isArray(d)?d:(Array.isArray(d.scenes)?d.scenes:[]);
     if(!scenes.length)throw new Error('No scenes returned — try again.');
-    saveResult({file:q.file.name,thumb:q.thumb,kind:'scenes',target,style:(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE,prov:sel.provider,
-      scenes,title:q.file.name+' — '+scenes.length+' scenes',ts:Date.now()});
+    const sty=(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE;
+    saveResult({file:q.file.name,thumb:q.thumb,kind:'scenes',target,style:sty,prov:sel.provider,
+      scenes,title:q.file.name+' — Replica ('+scenes.length+' scenes)',ts:Date.now()});
+    if($('altToggle')&&$('altToggle').checked){
+      $('status').textContent='Writing alternative story for '+q.file.name+'…';
+      try{
+        const alt=await altRewrite(scenes,sel,target,$('altStory').value.trim());
+        saveResult({file:q.file.name,thumb:q.thumb,kind:'scenes',target,style:sty,prov:sel.provider,
+          scenes:alt,title:q.file.name+' — Alternative story ('+alt.length+' scenes)',ts:Date.now()});
+      }catch(e){ $('status').textContent='Alternative story failed: '+e.message; await sleep(1500); }
+    }
     return;
   }
   saveResult({file:q.file.name,thumb:q.thumb,kind,target,style:(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE,prov:sel.provider,
@@ -962,6 +978,18 @@ async function buildVisionMessages(q,instr,prov){
   const content=[{type:'text',text:instr}];
   for(const u of imgs)content.push({type:'image_url',image_url:{url:u}});
   return [{role:'user',content}];
+}
+async function altRewrite(scenes,sel,target,storyIdea){
+  const instr=`You are a creative film director. Below is a scene-by-scene production breakdown of a video (JSON). Rewrite it as a BRAND-NEW story: ${storyIdea?`use this story idea: "${storyIdea}"`:'invent an original, engaging story yourself'}. RULES: keep the EXACT same number of scenes, the same time_windows, the same timeline structure (same beats per scene) and the same technical format — only change the narrative: characters, setting, wardrobe, actions, dialogue, mood and music. Dialogue must be in the new story's natural spoken language. Return ONLY valid JSON with the identical schema: {"scenes":[...]}.\n\nORIGINAL BREAKDOWN:\n${JSON.stringify(scenes).slice(0,60000)}`;
+  const text=await resilientCall(sel.provider,async s=>{
+    if(s.provider==='gemini')return await callGemini([{text:instr}],$('gmodel').value,s.key,8192);
+    const m=[{role:'user',content:instr}];
+    return s.provider==='groq'?await callGroq(m,s.key,8192):await callOR(m,s.key,8192);
+  });
+  const d=parseJSON(text);
+  const out=Array.isArray(d)?d:(Array.isArray(d.scenes)?d.scenes:[]);
+  if(!out.length)throw new Error('No alternative scenes returned.');
+  return out;
 }
 /* ============ prompt lab ============ */
 async function runLab(){
