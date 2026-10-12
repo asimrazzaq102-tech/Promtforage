@@ -430,20 +430,20 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div class="vsub">
       <div class="vhead"><span>⚡ GEMINI KEYS</span><span class="st no" id="s_gemini">0/3</span></div>
       <div id="list_gemini"></div>
-      <a class="keylink" href="https://aistudio.google.com" target="_blank" rel="noopener">Get Gemini Key ↗</a><br>
-      <button class="btn sm outline-blue" onclick="window.open('https://aistudio.google.com','_blank')">Get Free Gemini API Key</button>
+      <a class="keylink" href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener">Get Gemini Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://aistudio.google.com/app/api-keys','_blank')">Get Free Gemini API Key</button>
     </div>
     <div class="vsub">
       <div class="vhead"><span>🚀 GROQ KEYS</span><span class="st no" id="s_groq">0/2</span></div>
       <div id="list_groq"></div>
-      <a class="keylink" href="https://groq.com" target="_blank" rel="noopener">Get Groq Key ↗</a><br>
-      <button class="btn sm outline-blue" onclick="window.open('https://groq.com','_blank')">Get Free Groq API Key</button>
+      <a class="keylink" href="https://console.groq.com/keys" target="_blank" rel="noopener">Get Groq Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://console.groq.com/keys','_blank')">Get Free Groq API Key</button>
     </div>
     <div class="vsub">
       <div class="vhead"><span>🌐 OPENROUTER KEYS</span><span class="st no" id="s_openrouter">0/1</span></div>
       <div id="list_openrouter"></div>
-      <a class="keylink" href="https://openrouter.ai" target="_blank" rel="noopener">Get OpenRouter Key ↗</a><br>
-      <button class="btn sm outline-blue" onclick="window.open('https://openrouter.ai','_blank')">Get Free OpenRouter API Key</button>
+      <a class="keylink" href="https://openrouter.ai/keys" target="_blank" rel="noopener">Get OpenRouter Key ↗</a><br>
+      <button class="btn sm outline-blue" onclick="window.open('https://openrouter.ai/keys','_blank')">Get Free OpenRouter API Key</button>
     </div>
   </div>
 
@@ -533,8 +533,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <label class="lbl">Duration</label>
   <div class="chips" id="durPills">
     <div class="chip" data-v="10s" data-tip="10S ONLY — MAXIMUM PER-SECOND DETAIL FOR CLIPS UP TO 10S (ALWAYS MATCHES THE CLIP'S EXACT LENGTH)">10S ONLY</div>
-    <div class="chip" data-v="1min" data-tip="1 MIN ONLY — RICHLY DETAILED ~10S SCENES, BEST FOR CLIPS UP TO 1 MINUTE (ALWAYS MATCHES THE CLIP'S EXACT LENGTH)">1 MIN ONLY</div>
-    <div class="chip on" data-v="long" data-tip="LONG VIDEOS — COMPACT ~10S SCENES FOR LONG CLIPS (ALWAYS MATCHES THE CLIP'S EXACT LENGTH)">LONG VIDEOS</div>
+    <div class="chip on" data-v="1min" data-tip="1 MIN ONLY — RICHLY DETAILED ~10S SCENES, BEST FOR CLIPS UP TO 1 MINUTE (ALWAYS MATCHES THE CLIP'S EXACT LENGTH)">1 MIN ONLY</div>
+    <div class="chip" data-v="long" data-tip="LONG VIDEOS — COMPACT ~10S SCENES FOR LONG CLIPS (ALWAYS MATCHES THE CLIP'S EXACT LENGTH)">LONG VIDEOS</div>
   </div>
 
   <label class="lbl">Style</label>
@@ -582,7 +582,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     <div><label class="lbl">AI provider</label>
       <select id="provider"><option value="auto">Auto (first available)</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option></select></div>
     <div><label class="lbl">Gemini model</label>
-      <select id="gmodel"><option>gemini-3.6-flash</option><option>gemini-3.8-flash</option><option>gemini-flash-latest</option></select></div>
+      <select id="gmodel"><option>gemini-3.6-flash</option><option>gemini-3.8-flash</option><option>gemini-3.7-flash</option><option>gemini-flash-latest</option></select></div>
   </div>
 </div></section>
 
@@ -624,7 +624,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <!-- COMMUNITY -->
 <section id="community"><div class="reveal">
   <div class="eyebrow" style="text-align:center">COMMUNITY</div>
-  <h2 class="secttl">Join Our Official Networks &amp; Grow With Us</h2>
+  <h2 class="secttl">Join the PromptForge Community</h2>
   <p class="sub" style="text-align:center;max-width:620px;margin:0 auto">Connect with fellow creators — daily prompt drops, workflow guides and early access to new PromptForge features.</p>
   <div class="carwrap reveal" id="carousel"><div class="cargrid">
     <div class="comm-card c1">
@@ -672,12 +672,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <div class="eyebrow">HELP</div>
   <h2>FAQ</h2><p class="sub"></p>
   <details class="faq" open><summary>What does PromptForge actually do?</summary><div class="a">It studies your video or image and writes a production-ready generation prompt for AI tools like Veo, Midjourney or Flux — plus commercial title, keywords and category metadata ready for stock sites like Adobe Stock or Shutterstock.</div></details>
-  <details class="faq"><summary>Is my media uploaded anywhere?</summary><div class="a">No. Files are processed in your browser. The only network call containing your media goes to the AI provider whose key you added (Gemini, Groq or OpenRouter). There is no PromptForge server.</div></details>
-  <details class="faq"><summary>Which provider should I use?</summary><div class="a">Gemini is the best all-rounder — it's the only one that reads actual video motion. Groq and OpenRouter work from sampled keyframes for video, but are equally capable for images. All have free tiers.</div></details>
-  <details class="faq"><summary>Recreate vs Inspire — what's the difference?</summary><div class="a"><b>Recreate</b> reverse-engineers the exact asset into a prompt that rebuilds it. <b>Inspire</b> studies only the style — mood, palette, lighting, camera language — and writes a prompt for a brand-new original scene in that style, never naming artists or copying the original.</div></details>
-  <details class="faq"><summary>Can I add more than one API key?</summary><div class="a">Yes — add as many keys per provider as you like with the "+ Add Key" button. PromptForge rotates through them automatically and skips any key that hits a rate limit, so long queues keep flowing on free tiers.</div></details>
-  <details class="faq"><summary>Can I process many files at once?</summary><div class="a">Yes. Drop multiple files and they queue up; PromptForge runs them one at a time to stay under free-tier rate limits, and every result lands in your library as its own card.</div></details>
-  <details class="faq"><summary>Is PromptForge free?</summary><div class="a">Yes. The app itself is free and open — you bring your own API key from a provider with a free tier. PromptForge never asks for payment or an account.</div></details>
+  <details class="faq"><summary>Is my media uploaded anywhere?</summary><div class="a">Your files are read inside your own browser. The only place your media is sent is the AI provider you picked (Gemini, Groq or OpenRouter), using your own key. The prompt tools have no backend of their own. The optional Face Swap tool is separate: it talks only to the PC server whose address you enter there.</div></details>
+  <details class="faq"><summary>Which provider should I use?</summary><div class="a">Start with Gemini: it can watch the real video, including motion. Groq and OpenRouter only see 4 frames taken from the video, so they suit single images best. All three have a free option.</div></details>
+  <details class="faq"><summary>Recreate vs Inspire — what's the difference?</summary><div class="a"><b>Recreate</b> tries to rebuild the exact image or clip you uploaded. <b>Inspire</b> keeps only the look and feel (colors, light, camera style) and writes a fresh scene of its own, without copying the original or naming any artist.</div></details>
+  <details class="faq"><summary>Can I add more than one API key?</summary><div class="a">Yes. Add several keys per provider (comma-separated also works). When one hits its rate limit it rests for 90 seconds and the next key takes over, so long batches keep running on free quotas.</div></details>
+  <details class="faq"><summary>Can I process many files at once?</summary><div class="a">Yes. Add as many files as you like (up to 40 MB each). They run one after another with a short pause to respect free-tier limits, and each finished file becomes its own card in Results.</div></details>
+  <details class="faq"><summary>Is PromptForge free?</summary><div class="a">Yes. There is nothing to pay and no account to make. You only bring your own API key, and Gemini, Groq and OpenRouter all have free options.</div></details>
 </div></section>
 </div>
 
@@ -702,13 +702,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <div>
         <div class="fhead">FREE API PORTALS</div>
         <div class="portal-btns">
-          <a class="btn sm bluebtn" href="https://aistudio.google.com" target="_blank" rel="noopener">GET GEMINI API KEY</a>
-          <a class="btn sm ghost" href="https://groq.com" target="_blank" rel="noopener">GET GROQ API KEY</a>
-          <a class="btn sm ghost" href="https://openrouter.ai" target="_blank" rel="noopener">OPENROUTER API KEY</a>
+          <a class="btn sm bluebtn" href="https://aistudio.google.com/app/api-keys" target="_blank" rel="noopener">GET GEMINI API KEY</a>
+          <a class="btn sm ghost" href="https://console.groq.com/keys" target="_blank" rel="noopener">GET GROQ API KEY</a>
+          <a class="btn sm ghost" href="https://openrouter.ai/keys" target="_blank" rel="noopener">OPENROUTER API KEY</a>
         </div>
       </div>
     </div>
-    <div class="flegal">Keys are stored only in your browser's localStorage. Media is sent only to the AI provider you choose — there is no PromptForge server.</div>
+    <div class="flegal">Keys are stored only in your browser's localStorage. Media is sent only to the AI provider you choose. Face Swap (optional) runs on the owner's own PC.</div>
     <div class="fcopy">© 2026 <b>PromptForge</b> — free &amp; open.</div>
   </div>
 </footer>
@@ -721,7 +721,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 function setStatus(t){$('status').textContent=t||''}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600)}
 function pillWire(id,cb){const el=$(id);el.querySelectorAll('.pill,.chip').forEach(p=>p.onclick=()=>{el.querySelectorAll('.pill,.chip').forEach(x=>x.classList.remove('on'));p.classList.add('on');cb&&cb(p.dataset.v)});}
-let MODE='video',STYLE='recreate',LAB='enhance',PRESET='veo3',METAFLAVOR='adobe',DURATION='long',STYLE_SEL=null;
+let MODE='video',STYLE='recreate',LAB='enhance',PRESET='veo3',METAFLAVOR='adobe',DURATION='1min',STYLE_SEL=null;
 /* hover tooltips (fixed — escapes card stacking contexts) */
 const _tipEl=document.createElement('div');_tipEl.id='hovertip';document.body.appendChild(_tipEl);
 document.querySelectorAll('[data-tip]').forEach(el=>{
@@ -888,7 +888,7 @@ function refreshKeys(){
   renderVault();
 }
 function saveKeys(){refreshKeys();setStatus('Keys saved in this browser.');toast('Keys saved ✓')}
-function clearKeys(){['pf_gemini','pf_groq','pf_openrouter'].forEach(k=>localStorage.removeItem(k));refreshKeys();setStatus('Keys cleared.');}
+function clearKeys(){if(!confirm('Remove all saved API keys from this browser?'))return;['pf_gemini','pf_groq','pf_openrouter'].forEach(k=>localStorage.removeItem(k));refreshKeys();setStatus('Keys cleared.');}
 /* returns {provider, key} — next healthy key in round-robin order */
 function pickProvider(want){
   const order=want==='auto'?['gemini','groq','openrouter']:[want];
@@ -937,22 +937,48 @@ async function resilientCall(want,fn){
 /* ============ provider clients ============ */
 async function fetchT(url,opts,ms){
   const c=new AbortController(),t=setTimeout(()=>c.abort(),ms||600000);
-  try{return await fetch(url,{...opts,signal:c.signal})}
-  catch(e){if(e.name==='AbortError')throw new Error('Request timed out after 10 minutes — connection too slow or server hung. Try again.');throw e}
-  finally{clearTimeout(t)}
+  try{
+    try{return await fetch(url,{...opts,signal:c.signal})}
+    catch(e){
+      /* sandboxed previews (e.g. inside Claude) can't pass an AbortSignal to fetch — retry once without it */
+      if(/could not be cloned|DataCloneError/i.test((e&&e.message)||'')||(e&&e.name==='DataCloneError'))return await fetch(url,opts);
+      throw e;
+    }
+  }catch(e){
+    if(e.name==='AbortError')throw new Error('Request timed out after 10 minutes — connection too slow or server hung. Try again.');
+    throw e;
+  }finally{clearTimeout(t)}
 }
 async function callGemini(parts,model,key,maxTok){
   key=key||getKeys('gemini')[0];
   const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
-  const r=await fetchT(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.7,maxOutputTokens:maxTok||4096}})});
-  if(!r.ok)throw new Error('Gemini error '+r.status+': '+(await r.text()).slice(0,200));
+  const r=await fetchT(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.7,maxOutputTokens:maxTok||8192}})});
+  if(!r.ok){const body=(await r.text()).slice(0,200);throw new Error('Gemini error '+r.status+': '+body+((r.status===413||/too large|payload|exceeds/i.test(body))?' — file is too big for direct upload, try a smaller/compressed video.':''))}
   const j=await r.json();
   const t=j.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('');
   if(!t)throw new Error('Gemini returned no text.');
   return t;
 }
+/* model fallback chain: selected model first, then others. Moves on if a model is overloaded (503) or unknown (404) */
+const geminiModels=()=>[$('gmodel').value,'gemini-3.6-flash','gemini-3.8-flash','gemini-3.7-flash','gemini-flash-latest'].filter((m,i,a)=>a.indexOf(m)===i);
+async function callGeminiChain(parts,key,maxTok){
+  const models=geminiModels();let lastErr=null;
+  for(const m of models){
+    try{
+      if(m!==models[0]&&$('status'))$('status').textContent='Trying '+m+'…';
+      return await callGemini(parts,m,key,maxTok);
+    }catch(e){
+      lastErr=e;
+      if(/503|404|UNAVAILABLE|NOT_FOUND|overloaded|high demand/i.test(e.message||''))continue;
+      throw e;
+    }
+  }
+  throw lastErr;
+}
 async function callOpenAICompat(url,key,model,messages,maxTok){
-  const r=await fetchT(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key,'HTTP-Referer':location.href,'X-Title':'PromptForge'},body:JSON.stringify({model,messages,temperature:0.7,max_tokens:maxTok||4096})});
+  const hdr={'Content-Type':'application/json','Authorization':'Bearer '+key};
+  if(/openrouter\.ai/.test(url)){hdr['HTTP-Referer']=location.origin+location.pathname;hdr['X-Title']='PromptForge'}
+  const r=await fetchT(url,{method:'POST',headers:hdr,body:JSON.stringify({model,messages,temperature:0.7,max_tokens:maxTok||4096})});
   if(!r.ok)throw new Error('API error '+r.status+': '+(await r.text()).slice(0,200));
   const j=await r.json();
   const t=j.choices?.[0]?.message?.content;
@@ -970,12 +996,13 @@ function extractKeyframes(file,n=4){
     const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';
     v.src=URL.createObjectURL(file);
     v.onloadedmetadata=async()=>{
+      if(!v.videoWidth)return rej(new Error('Could not read video frames (unsupported format).'));
       const c=document.createElement('canvas');const out=[];const W=640;
       const scale=W/v.videoWidth;c.width=W;c.height=Math.round(v.videoHeight*scale);
       const ctx=c.getContext('2d');
       for(let i=0;i<n;i++){
         const t=(v.duration*(i+0.5))/n;
-        await new Promise(r=>{const h=()=>{v.removeEventListener('seeked',h);r()};v.addEventListener('seeked',h);v.currentTime=Math.min(t,v.duration-0.1);});
+        await new Promise(r=>{const h=()=>{v.removeEventListener('seeked',h);r()};v.addEventListener('seeked',h);setTimeout(r,4000);v.currentTime=Math.min(t,v.duration-0.1);});
         await sleep(120);ctx.drawImage(v,0,0,c.width,c.height);
         out.push(c.toDataURL('image/jpeg',0.7));
       }
@@ -986,7 +1013,12 @@ function extractKeyframes(file,n=4){
 }
 
 /* ============ prompt templates ============ */
-const CATS=['Animals','Buildings and Architecture','Business','Food and Drink','Nature','Objects','People','Technology','Transport','Travel','Lifestyle','Abstract'];
+const CATS=['Animals','Buildings and Architecture','Business','Drinks','The Environment','States of Mind','Food','Graphic Resources','Hobbies and Leisure','Industry','Landscapes','Lifestyle','People','Plants and Flowers','Culture and Religion','Science','Social Issues','Sports','Technology','Transport','Travel'];
+/* old saved results used a different category list — map them onto the Adobe list */
+const CAT_ALIAS={'nature':'The Environment','objects':'Graphic Resources','abstract':'Graphic Resources','food and drink':'Food','buildings':'Buildings and Architecture','architecture':'Buildings and Architecture','transportation':'Transport','environment':'The Environment','plants':'Plants and Flowers','flowers':'Plants and Flowers','religion':'Culture and Religion','culture':'Culture and Religion'};
+function normCat(c){const t=String(c||'').trim().toLowerCase();if(!t)return '';const hit=CATS.find(x=>x.toLowerCase()===t);return hit||CAT_ALIAS[t]||''}
+/* closest Shutterstock category for each Adobe category (verify against Shutterstock's current list) */
+const SS_CAT={'Animals':'Animals/Wildlife','Buildings and Architecture':'Buildings/Landmarks','Business':'Business/Finance','Drinks':'Food and Drink','The Environment':'Nature','States of Mind':'People','Food':'Food and Drink','Graphic Resources':'Backgrounds/Textures','Hobbies and Leisure':'Sports/Recreation','Industry':'Industrial','Landscapes':'Nature','Lifestyle':'People','People':'People','Plants and Flowers':'Nature','Culture and Religion':'Religion','Science':'Science','Social Issues':'People','Sports':'Sports/Recreation','Technology':'Technology','Transport':'Transportation','Travel':'Parks/Outdoor'};
 function baseRules(target){
   const extra=/seedance/i.test(target)?' Follow Seedance / Runway Gen-3 prompt format conventions.':'';
   const museX=/^muse$/i.test(target)?' Write cinematic prompts optimized for Muse AI video generation.':'';
@@ -1011,8 +1043,8 @@ function fileDuration(file){
     }catch(e){res(0)}
   });
 }
-function detailRules(dur,unit){
-  const per10=70,n=Math.round(dur||0);
+function detailRules(dur,unit,wp){
+  const per10=wp||120,n=Math.round(dur||0);
   let words,label;
   if(unit==='scene'){words=per10;label='EACH scene prompt'}
   else if(n>0){words=Math.round(n/10*per10);label='EACH prompt'}
@@ -1041,7 +1073,7 @@ Return ONLY valid JSON, no markdown fences, no commentary. Schema:
     :`Also produce stock metadata: commercial title under 200 chars, ${kwCount} lowercase keywords, no duplicates, no brand names; one-sentence description; category one of: ${CATS.join(', ')}; plus a "negative_prompt": comma-separated list of things to AVOID when generating (artifacts, distortions, bad anatomy, watermark, text overlay, blur, low quality, oversaturation).`;
   if(kind==='video'&&DURATION!=='10s'){
     const rich=DURATION==='1min';
-    return `You are an expert AI video analyst. Analyze the attached video.${styleNote()} ${rec} ${baseRules(target)} ${detailRules()} Split it into natural scenes of roughly 10 seconds each, covering the clip's full length from start to end. For EACH scene write ${rich?'a richly detailed production prompt (full camera, lighting, action and mood detail)':'a compact 2-3 sentence prompt (action, camera, lighting, mood only — no filler)'}. Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"scenes":[{"scene_number":"Scene 1 of N","time_window":"0s – 10s","prompt":"...","negative_prompt":"..."}]}`;
+    return `You are an expert AI video analyst. Analyze the attached video.${styleNote()} ${rec} ${baseRules(target)} ${detailRules(dur,'scene',rich?120:70)} Split it into natural scenes of roughly 10 seconds each, covering the clip's full length from start to end. For EACH scene write ${rich?'a richly detailed production prompt (full camera, lighting, action and mood detail)':'a compact but concrete 3-4 sentence prompt (exact action, camera, lighting, mood — no filler)'}. Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"scenes":[{"scene_number":"Scene 1 of N","time_window":"0s – 10s","prompt":"...","negative_prompt":"..."}]}`;
   }
   return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)}${kind==='video'?' '+detailRules(dur,'prompt'):''} ${kw} ${jsonAsk()}`;
 }
@@ -1078,12 +1110,27 @@ function parseJSONRepair(s,origErr){
   }catch(e2){throw origErr}
 }
 /* ============ queue & analysis ============ */
-let QUEUE=[];
+let QUEUE=[],BATCH=false;
 const drop=$('drop'),filein=$('filein');
 drop.onclick=()=>filein.click();
 ['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
 ['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
-drop.addEventListener('drop',ev=>addFiles(ev.dataTransfer.files));
+drop.addEventListener('drop',ev=>{
+  if(ev.dataTransfer.files&&ev.dataTransfer.files.length){addFiles(ev.dataTransfer.files);return}
+  dropFromWeb(ev.dataTransfer);
+});
+async function dropFromWeb(dt){
+  let u=(dt.getData('text/uri-list')||'').split(/\r?\n/).find(l=>l&&!l.startsWith('#'));
+  if(!u){const m=(dt.getData('text/html')||'').match(/<img[^>]+src=["']([^"']+)["']/i);if(m)u=m[1]}
+  if(!u){toast('Nothing droppable found');return}
+  try{
+    setStatus('Fetching dropped image…');
+    const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);
+    const b=await r.blob();if(!/^image\//.test(b.type))throw new Error('not an image');
+    const ext=(b.type.split('/')[1]||'png').split('+')[0];
+    addFiles([new File([b],'web-image-'+Date.now().toString(36)+'.'+ext,{type:b.type})]);setStatus('');
+  }catch(e){setStatus('That website blocks direct download — save the image and drop the file instead.')}
+}
 filein.onchange=()=>{addFiles(filein.files);filein.value=''};
 function addFiles(list){
   for(const f of list){
@@ -1102,7 +1149,7 @@ function clearQueue(){QUEUE=[];renderQueue();setStatus('');$('prog').style.displ
 async function runQueue(){
   const sel=pickProvider($('provider').value);
   if(!sel){setStatus('Add at least one API key first.');return}
-  $('analyzeBtn').disabled=true;$('prog').style.display='block';
+  $('analyzeBtn').disabled=true;$('prog').style.display='block';BATCH=true;
   let i=0;
   for(const q of QUEUE){
     if(q.st==='done')continue;
@@ -1113,31 +1160,18 @@ async function runQueue(){
     catch(e){q.st='err';q.err=e.message;setStatus('Error on '+q.file.name+': '+e.message)}
     renderQueue();await sleep(1200);
   }
-  $('progbar').style.width='100%';setStatus('Done — results are in the Library below.');
+  BATCH=false;$('progbar').style.width='100%';setStatus('Done — results are in the Library below.');
   $('analyzeBtn').disabled=false;setTimeout(()=>$('prog').style.display='none',1500);
 }
 async function analyzeOne(q,sel){
   const kind=MODE==='meta'?'meta':MODE==='scenes'?'scenes':MODE==='dual'?'dual':(q.file.type.startsWith('video')?'video':'image');
   const target=$('target').value,dur=await fileDuration(q.file),instr=buildAnalyze(kind,target,STYLE,dur);
-  const maxTok=(kind==='scenes'||kind==='dual'||(kind==='video'&&DURATION!=='10s'))?8192:undefined;
+  const maxTok=(kind==='scenes'||kind==='dual'||(kind==='video'&&DURATION!=='10s'))?16384:undefined;
   let b64cache=null,b64done=false;
-  const geminiModels=()=>[$('gmodel').value,'gemini-3.6-flash','gemini-3.8-flash','gemini-flash-latest'].filter((m,i,a)=>a.indexOf(m)===i);
   const getText=()=>resilientCall(sel.provider,async s=>{
     if(s.provider==='gemini'){
       if(!b64done){b64cache=await fileToB64(q.file);b64done=true}
-      const models=geminiModels();
-      let lastErr=null;
-      for(const m of models){
-        try{
-          if(m!==models[0]&&$('status'))$('status').textContent='Trying '+m+'…';
-          return await callGemini([{text:instr},{inlineData:{mimeType:q.file.type,data:b64cache}}],m,s.key,maxTok);
-        }catch(e){
-          lastErr=e;
-          if(/503|UNAVAILABLE|overloaded|high demand/i.test(e.message||''))continue;
-          throw e;
-        }
-      }
-      throw lastErr;
+      return await callGeminiChain([{text:instr},{inlineData:{mimeType:q.file.type,data:b64cache}}],s.key,maxTok);
     }
     const msgs=await buildVisionMessages(q,instr,s.provider);
     return s.provider==='groq'?await callGroq(msgs,s.key,maxTok):await callOR(msgs,s.key,maxTok);
@@ -1191,7 +1225,7 @@ async function buildVisionMessages(q,instr,prov){
 async function altRewrite(scenes,sel,target,storyIdea){
   const instr=`You are a creative film director. Below is a scene-by-scene production breakdown of a video (JSON). Rewrite it as a BRAND-NEW story: ${storyIdea?`use this story idea: "${storyIdea}"`:'invent an original, engaging story yourself'}. RULES: keep the EXACT same number of scenes, the same time_windows, the same timeline structure (same beats per scene) and the same technical format — only change the narrative: characters, setting, wardrobe, actions, dialogue, mood and music. Dialogue must be in the new story's natural spoken language. Return ONLY valid JSON with the identical schema: {"scenes":[...]}.\n\nORIGINAL BREAKDOWN:\n${JSON.stringify(scenes).slice(0,60000)}`;
   const text=await resilientCall(sel.provider,async s=>{
-    if(s.provider==='gemini')return await callGemini([{text:instr}],$('gmodel').value,s.key,8192);
+    if(s.provider==='gemini')return await callGeminiChain([{text:instr}],s.key,8192);
     const m=[{role:'user',content:instr}];
     return s.provider==='groq'?await callGroq(m,s.key,8192):await callOR(m,s.key,8192);
   });
@@ -1211,7 +1245,7 @@ async function runLab(){
     const n=+$('variCount').value;
     const instr=buildLab(LAB,$('target').value,input,n);
     const text=await resilientCall(sel.provider,async s=>{
-      if(s.provider==='gemini')return await callGemini([{text:instr}],$('gmodel').value,s.key);
+      if(s.provider==='gemini')return await callGeminiChain([{text:instr}],s.key);
       const m=[{role:'user',content:instr}];
       return s.provider==='groq'?await callGroq(m,s.key):await callOR(m,s.key);
     });
@@ -1240,11 +1274,11 @@ function labEnhToLib(){const n=$('le0n');saveResult({file:'enhanced',thumb:'',ki
 /* ============ library ============ */
 let LIB=[];
 try{LIB=JSON.parse(localStorage.getItem('pf_lib')||'[]')}catch(e){LIB=[]}
-function saveResult(r){r.id=Math.random().toString(36).slice(2);LIB.unshift(r);persistLib();renderLib();document.getElementById('library').scrollIntoView({behavior:'smooth'});}
+function saveResult(r){r.id=Math.random().toString(36).slice(2);LIB.unshift(r);persistLib();renderLib();if(!BATCH)document.getElementById('library').scrollIntoView({behavior:'smooth'});}
 function persistLib(){try{localStorage.setItem('pf_lib',JSON.stringify(LIB.map(r=>({...r,thumb:''}))))}catch(e){}}
 function modeLabel(k){return {video:'VIDEO TO PROMPT',image:'IMAGE TO PROMPT',meta:'METADATA ONLY',scenes:'SCENE BREAKDOWN',dual:'DUAL PROMPT'}[k]||String(k||'').toUpperCase()}
 function mainText(r){
-  if(r.scenes&&r.scenes.length)return r.scenes[0].prompt||'';
+  if(r.scenes&&r.scenes.length)return r.scenes.map((sc,i)=>'Scene '+(i+1)+': '+(sc.prompt||'')).join('\n\n');
   if(r.kind==='dual')return r.prompt||'';
   return r.prompt||r.description||'';
 }
@@ -1297,9 +1331,15 @@ async function fsRequestCode(){
 async function fsUnlock(silent){
   const url=fsUrl(),msg=$('fsLockMsg'),token=localStorage.getItem('fs_token')||'';
   if(url&&token){
-    try{const r=await fetch(url+'/verify',{headers:{'X-API-Key':token}});
-      if(r.ok){fsShowMain(true);return true}}catch(e){}
-    localStorage.removeItem('fs_token');
+    try{
+      const r=await fetch(url+'/verify',{headers:{'X-API-Key':token}});
+      if(r.ok){fsShowMain(true);return true}
+      if(r.status===401||r.status===403)localStorage.removeItem('fs_token');
+    }catch(e){
+      /* server offline: keep the saved token so you don't need a new code every time */
+      if(!silent)msg.textContent='❌ Server not reachable — is it running?';
+      return false;
+    }
   }
   const code=($('fsCode').value||'').trim();
   if(!code){if(!silent)msg.textContent='Tap "Request access code" first, then enter the 6-digit code.';return false}
@@ -1329,10 +1369,10 @@ async function fsSwap(){
     const r=await fetch(url+'/swap',{method:'POST',headers:{'X-API-Key':token},body:fd});
     if(!r.ok)throw new Error('Server error '+r.status+': '+(await r.text()).slice(0,160));
     const blob=await r.blob();
-    const url=URL.createObjectURL(blob);
+    const outUrl=URL.createObjectURL(blob);
     st.textContent='Done ✓';
-    out.innerHTML=`<video src="${url}" controls style="width:100%;border-radius:12px"></video>
-      <div class="btnrow" style="margin-top:10px"><a class="btn sm ghost" href="${url}" download="faceswap.mp4">⬇ Download video</a></div>`;
+    out.innerHTML=`<video src="${outUrl}" controls style="width:100%;border-radius:12px"></video>
+      <div class="btnrow" style="margin-top:10px"><a class="btn sm ghost" href="${outUrl}" download="faceswap.mp4">⬇ Download video</a></div>`;
     toast('Face swap complete ✓');
   }catch(e){st.textContent='Error: '+e.message}
   btn.disabled=false;
@@ -1370,9 +1410,15 @@ function detailHTML(r,i){
       ${r.prompt&&r.kind!=='dual'?`<button class="btn sm ghost" onclick="copyLP(${i})">Copy prompt</button>`:''}
       ${r.prompt&&r.neg?`<button class="btn sm ghost" onclick="copyLPN(${i})">Copy negative</button>`:''}
       ${r.kind==='dual'?`<button class="btn sm ghost" onclick="copyT('dr${i}')">Copy replica</button><button class="btn sm ghost" onclick="copyT('da${i}')">Copy alternative</button>`:''}
+      ${r.scenes&&r.scenes.length?`<button class="btn sm ghost" onclick="copyScenesJSON(${i})">Copy all scenes (full JSON)</button>`:''}
       <button class="btn sm ghost" onclick="delR(${i});closeRModal()">Delete</button>
     </div>`;
 }
+function scenesJSONText(r){
+  const n=r.scenes.length,bar='='.repeat(74);
+  return r.scenes.map((sc,i)=>'/* '+bar+'\n   \uD83C\uDFAC '+(sc.scene_number||('SCENE '+(i+1)+' OF '+n))+'\n   '+bar+' */\n'+JSON.stringify(sc,null,2)).join('\n\n\n');
+}
+function copyScenesJSON(i){navigator.clipboard.writeText(scenesJSONText(LIB[i])).then(()=>toast('All scenes copied \u2713'))}
 function copyLP(i){const t=$('lp'+i);navigator.clipboard.writeText(t?t.value:LIB[i].prompt).then(()=>toast('Copied ✓'))}
 function copyLPN(i){const t=$('ln'+i);navigator.clipboard.writeText(t?t.value:LIB[i].neg).then(()=>toast('Copied ✓'))}
 function delR(i){LIB.splice(i,1);persistLib();renderLib()}
@@ -1382,18 +1428,26 @@ function clearLib(){if(confirm('Clear all results?')){LIB=[];persistLib();render
 function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click()}
 function exportCSV(kind){
-  if(!LIB.length){toast('Library is empty — analyze something first.');return}
+  const seen=new Set();
+  const rows0=LIB.filter(r=>r.kind!=='text'&&(r.keywords||[]).length&&!seen.has(r.file)&&seen.add(r.file));
+  if(!rows0.length){toast('Nothing to export — analyze an image/video first (results need keywords).');return}
+  const clean=r=>{
+    const kw=[...new Set((r.keywords||[]).map(k=>String(k).trim().toLowerCase()).filter(Boolean))].slice(0,49);
+    const one=t=>String(t||'').replace(/\s+/g,' ').trim().slice(0,200);
+    return {file:r.file,title:one(r.title),desc:one(r.description||r.title),kw:kw.join(', '),cat:normCat(r.category)};
+  };
   let rows;
   if(kind==='adobe'){
     rows=[['Filename','Title','Keywords','Category','Releases'].join(',')];
-    LIB.forEach((r,i)=>rows.push([csvCell('pf_'+Date.now()+'_'+i+'.jpg'),csvCell(r.title),csvCell((r.keywords||[]).join(', ')),csvCell(r.category),csvCell('')].join(',')));
-    download('promptforge_adobe_stock.csv',rows.join('\n'));
+    rows0.forEach(r=>{const c=clean(r);rows.push([csvCell(c.file),csvCell(c.title),csvCell(c.kw),csvCell(c.cat?CATS.indexOf(c.cat)+1:''),csvCell('')].join(','))});
+    download('promptforge_adobe_stock.csv',rows.join('\r\n'));
   }else{
-    rows=[['Filename','Description','Keywords','Categories'].join(',')];
-    LIB.forEach((r,i)=>rows.push([csvCell('pf_'+Date.now()+'_'+i+'.jpg'),csvCell(r.description||r.title),csvCell((r.keywords||[]).join(', ')),csvCell(r.category)].join(',')));
-    download('promptforge_shutterstock.csv',rows.join('\n'));
+    rows=[['Filename','Description','Keywords','Categories','Editorial','Mature content','illustration'].join(',')];
+    rows0.forEach(r=>{const c=clean(r);rows.push([csvCell(c.file),csvCell(c.desc),csvCell(c.kw),csvCell(c.cat?SS_CAT[c.cat]:''),csvCell('no'),csvCell('no'),csvCell('no')].join(','))});
+    download('promptforge_shutterstock.csv',rows.join('\r\n'));
   }
-  toast('CSV downloaded ✓');
+  const skipped=LIB.length-rows0.length;
+  toast('CSV downloaded ✓'+(skipped?' ('+skipped+' item(s) without keywords/duplicates skipped)':''));
 }
 function fullReport(){
   if(!LIB.length){toast('Library is empty — analyze something first.');return}
