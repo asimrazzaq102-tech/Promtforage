@@ -330,6 +330,28 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   .lay.warm,.fbeam{display:none}
 }
 .fx-art{opacity:0;transition:opacity 1.2s}.fx-art.ready{opacity:1}
+/* ---------- mbj logo (user-supplied, as-is) ---------- */
+.mbj-logo{--mbj-ink:#1a1a1a;--mbj-accent:#F0643C;--mbj-cycle:8s;display:inline-block;width:220px;height:auto}
+.mbj-logo .s{fill:none;stroke-width:14;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 2;stroke-dashoffset:1;animation-duration:var(--mbj-cycle);animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.mbj-logo .k{stroke:var(--mbj-ink)}
+.mbj-logo .c{stroke:var(--mbj-accent)}
+.mbj-logo .m{animation-name:mbj-m}
+.mbj-logo .b1{animation-name:mbj-b1}
+.mbj-logo .b2{animation-name:mbj-b2}
+.mbj-logo .j{animation-name:mbj-j}
+.mbj-logo .dot{fill:var(--mbj-accent);transform-box:fill-box;transform-origin:center bottom;animation:mbj-drop var(--mbj-cycle) infinite}
+.mbj-logo .rip{fill:none;stroke:var(--mbj-accent);stroke-width:3;transform-box:fill-box;transform-origin:center;opacity:0;animation:mbj-rip var(--mbj-cycle) ease-out infinite}
+@keyframes mbj-m{0%{stroke-dashoffset:1}10%,88%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:-1}}
+@keyframes mbj-b1{0%,7%{stroke-dashoffset:1}17%,88%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:-1}}
+@keyframes mbj-b2{0%,14%{stroke-dashoffset:1}24%,88%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:-1}}
+@keyframes mbj-j{0%,21%{stroke-dashoffset:1}31%,88%{stroke-dashoffset:0}95%,100%{stroke-dashoffset:-1}}
+@keyframes mbj-drop{0%,28%{transform:translateY(-170px);opacity:1;animation-timing-function:ease-in}40%{transform:translateY(0) scale(1.25,.75);animation-timing-function:ease-out}43%{transform:translateY(0) scale(1)}50%{transform:translateY(-34px);animation-timing-function:ease-in}57%{transform:translateY(0) scale(1.12,.88)}62%{transform:translateY(-8px);animation-timing-function:ease-in}66%,90%{transform:translateY(0) scale(1);opacity:1}96%{transform:translateY(-24px) scale(.4);opacity:0}100%{transform:translateY(-170px);opacity:0}}
+@keyframes mbj-rip{0%,39%{transform:scale(1);opacity:0}40%{transform:scale(1);opacity:.7}55%{transform:scale(4);opacity:0}66%{transform:scale(1);opacity:.6}80%,100%{transform:scale(4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.mbj-logo .s,.mbj-logo .dot{animation:none;stroke-dashoffset:0;transform:none}.mbj-logo .rip{display:none}}
+/* navbar placement: dark header → white ink, navbar size */
+/* navbar placement: dark header → white ink, navbar size */
+header .mbj-logo{--mbj-ink:#ffffff;width:112px}
+.logo:has(.mbj-logo)::before{display:none}
 </style>
 <link rel="stylesheet" href="assets/hero-v2.css">
 </head>
@@ -338,7 +360,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <div class="grain"></div>
 
 <header><div class="container hd">
-  <div class="logo">PromptForge</div>
+  <div class="logo"><svg class="mbj-logo" viewBox="120 40 400 190" role="img" aria-label="mbj"><g transform="translate(55,0)"><path class="s k m" pathLength="1" d="M150 160 V100 M150 125 C150 100 200 100 200 125 V160 M200 125 C200 100 250 100 250 125 V160"/><path class="s k b1" pathLength="1" d="M290 60 V160"/><circle class="s k b2" pathLength="1" cx="318" cy="132" r="28" transform="rotate(180 318 132)"/><path class="s c j" pathLength="1" d="M410 100 V168 Q410 190 388 190"/><circle class="rip" cx="410" cy="68" r="10"/><circle class="dot" cx="410" cy="68" r="10"/></g></svg></div>
   <nav class="dnav"><a href="#analyzer">Analyzer</a><a href="#faceswap">Face Swap</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#community">Community</a><a href="#faq">FAQ</a></nav>
   <a class="hd-cta" href="#keys">API Settings</a>
   <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
