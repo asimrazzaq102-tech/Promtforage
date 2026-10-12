@@ -34,3 +34,8 @@
 @keyframes fxwarm{0%{clip-path:inset(0 100% 0 0)}45%,70%{clip-path:inset(0 0 0 0)}95%,100%{clip-path:inset(0 100% 0 0)}}
 .fbeam{position:absolute;top:0;bottom:0;width:2px;left:0;background:linear-gradient(to bottom,transparent,#fff 22%,#a5f3fc 78%,transparent);box-shadow:0 0 24px 7px rgba(103,232,249,.5);animation:fxbeam 15s ease-in-out infinite;opacity:0}
 @keyframes fxbeam{0%{left:0;opacity:0}3%{opacity:1}45%{left:100%;opacity:1}47%,68%{left:100%;opacity:0}70%{left:100%;opacity:1}95%{left:0;opacity:1}97%,100%{left:0;opacity:0}}
+/* visitor counter pill */
+.ucount{display:inline-flex;align-items:center;gap:8px;margin:22px auto 0;padding:9px 20px;border-radius:999px;background:rgba(13,20,36,.72);border:1px solid rgba(96,125,180,.35);color:#eef2ff;font:600 14px/1.2 system-ui,sans-serif;backdrop-filter:blur(8px);opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .5s ease}
+.ucount.show{opacity:1;transform:none}
+.ucount .udot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.8)}
+.fx-copy{text-align:center}
