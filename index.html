@@ -7,7 +7,7 @@
 <meta name="description" content="PromptForge reverse-engineers any image or video into production-ready AI generation prompts plus stock-ready metadata. Free, runs in your browser, bring your own API key.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,700..800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#04060c; --bg2:#0a0f1c;
@@ -40,7 +40,7 @@ a{color:var(--accent2)}
 
 /* header */
 header{position:sticky;top:0;z-index:50;background:rgba(4,6,12,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
-.hd{display:flex;align-items:center;justify-content:space-between;padding:15px 0}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:15px 22px}
 .logo{font-family:var(--font-d);font-size:22px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.3px}
 .logo::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--grad);margin-right:9px;box-shadow:0 0 14px rgba(139,92,246,.9);vertical-align:2px}
 nav.dnav{display:flex;gap:26px}
@@ -53,8 +53,8 @@ nav.dnav a:hover::after{width:100%}
 /* slide-in drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;opacity:0;pointer-events:none;transition:opacity .3s}
 .scrim.show{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,86vw);background:#0a0f1e;border-left:1px solid var(--border2);z-index:61;transform:translateX(105%);transition:transform .34s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;padding:26px 24px;box-shadow:-30px 0 80px rgba(0,0,0,.6)}
-.drawer.open{transform:none}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,86vw);background:#0a0f1e;border-left:1px solid var(--border2);z-index:61;transform:translateX(105%);transition:transform .34s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;padding:26px 24px}
+.drawer.open{transform:none;box-shadow:-30px 0 80px rgba(0,0,0,.6)}
 .drawer .dclose{align-self:flex-end;background:none;border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:10px;font-size:17px;cursor:pointer}
 .drawer nav{display:flex;flex-direction:column;gap:6px;margin:22px 0;flex:1}
 .drawer nav a{color:var(--text);text-decoration:none;font-weight:600;font-size:16px;padding:13px 14px;border-radius:12px;transition:.2s}
@@ -62,45 +62,8 @@ nav.dnav a:hover::after{width:100%}
 .drawer .api-settings-btn{display:flex;align-items:center;justify-content:center;gap:9px;background:var(--bluegrad);color:#fff;text-decoration:none;font-weight:700;font-size:15px;padding:15px;border-radius:14px;box-shadow:0 10px 28px rgba(37,99,235,.4)}
 .drawer .dfoot{margin-top:14px;text-align:center;color:var(--muted);font-size:12px}
 
-/* hero — full-bleed banner card: static bg image, animated color glows drifting over it */
-.hero{text-align:center;padding:88px 0 44px;position:relative;border-radius:24px;overflow:hidden;margin-top:18px;border:1px solid var(--border);
-  
-  background-size:cover;background-position:center 30%;background-repeat:no-repeat}
-.hero h1,.hero .lead,.hero .badge,.hero .slab,.hero .qchip{text-shadow:0 2px 24px rgba(0,0,0,.6)}
-.badge{display:inline-flex;align-items:center;gap:9px;background:rgba(79,140,255,.1);border:1px solid rgba(79,140,255,.35);color:#a9c6ff;font-size:12px;font-weight:700;padding:7px 17px;border-radius:99px;margin-bottom:24px;letter-spacing:1.6px}
-.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.hero h1{font-family:var(--font-d);font-size:clamp(28px,4.6vw,46px);font-weight:700;line-height:1.14;letter-spacing:-1.5px;margin-bottom:20px}
-.typeblue{color:var(--blue);text-shadow:0 0 34px rgba(79,140,255,.55);white-space:nowrap}
-.caret{display:inline-block;color:var(--blue);font-weight:300;animation:blink 1s step-end infinite;margin-left:2px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.hero .lead{color:var(--muted);max-width:660px;margin:0 auto 28px;font-size:17px}
-.qchips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.qchip{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;padding:8px 17px;border-radius:99px;cursor:pointer;transition:.2s;font-family:inherit}
-.qchip:hover{color:var(--text);border-color:var(--blue);box-shadow:0 0 18px rgba(79,140,255,.25);transform:translateY(-1px)}
-
-/* brand wordmark hero — code version of the Canva graphic (layout static, colors animate) */
-.hero>*{position:relative;z-index:1}
-.herostage{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.aurorastrip{position:absolute;top:-25%;bottom:-25%;left:0;width:200%;
- background:
-  radial-gradient(560px 420px at 15% 32%, rgba(139,92,246,.6), transparent 70%),
-  radial-gradient(640px 460px at 40% 62%, rgba(34,211,238,.55), transparent 70%),
-  radial-gradient(560px 420px at 68% 28%, rgba(217,70,239,.5), transparent 70%),
-  radial-gradient(560px 420px at 65% 32%, rgba(139,92,246,.6), transparent 70%),
-  radial-gradient(640px 460px at 90% 62%, rgba(34,211,238,.55), transparent 70%),
-  radial-gradient(560px 420px at 118% 28%, rgba(217,70,239,.5), transparent 70%);
- animation:auroraSlide 16s linear infinite;will-change:transform}
-@keyframes auroraSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.sweep{position:absolute;top:-25%;bottom:-25%;width:36%;left:-45%;background:linear-gradient(100deg,transparent,rgba(196,181,253,.28) 42%,rgba(255,255,255,.34) 50%,rgba(103,232,249,.30) 58%,transparent);filter:blur(16px);transform:skewX(-12deg);animation:sweep 7s ease-in-out infinite;mix-blend-mode:screen}
-@keyframes sweep{0%{left:-45%;opacity:0}10%{opacity:1}48%{left:108%;opacity:1}60%,100%{left:108%;opacity:0}}
-.wordmark{font-family:var(--font-d);font-weight:700;font-size:clamp(54px,9vw,102px);letter-spacing:-3px;line-height:1;margin:8px 0 16px;background:linear-gradient(100deg,#ffffff 15%,#c4b5fd 48%,#67e8f9 82%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 34px rgba(139,92,246,.45))}
-
-/* animated stat counters */
-.stats{display:flex;gap:36px;justify-content:center;margin-top:32px;flex-wrap:wrap}
-.stat{display:flex;flex-direction:column;align-items:center}
-.snum{font-family:var(--font-d);font-size:34px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-1px}
-.slab{font-size:11px;letter-spacing:2.2px;color:var(--muted);font-weight:700;margin-top:5px}
 
 /* marquee strip */
 .marquee{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:26px 0 6px;padding:13px 0;background:rgba(255,255,255,.015)}
@@ -333,7 +296,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   #modePills .pill{font-size:12px;padding:12px 6px;white-space:normal;line-height:1.35;display:flex;align-items:center;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){
-  .orb,.herostage .aurorastrip,.herostage .sweep,.mtrack,.drop .big,.badge .dot,.prog i::after,.caret{animation:none}
+  .orb,.mtrack,.drop .big,.prog i::after{animation:none}
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
@@ -348,8 +311,27 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
     border-radius:0;border-left:none;border-right:none;padding:176px 0 92px;background-position:center}
   .hero .lead{max-width:740px;font-size:18px}
 }
+<link rel="stylesheet" href="assets/hero-v2.css">
+.hd-cta{display:none;align-items:center;padding:10px 20px;border-radius:99px;background:var(--bluegrad);color:#fff;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(37,99,235,.38)}
+.marquee{width:100vw;margin-left:calc(50% - 50vw);margin-top:0}
+
+@media(min-width:861px){.hd-cta{display:inline-flex}}
+@media(min-width:1024px){
+  .fx{width:100vw;left:50%;margin-left:-50vw;margin-top:-84px;padding:156px 0 280px}
+}
+@media(max-width:600px){
+  .fx{padding:40px 0 215px}
+  .fx-art{height:250px}
+  .fx-h1 .l2{min-height:2.1em}
+  .fbtn{width:100%}
+  .fcta{width:100%;padding:0 4px}
+}
+@media(prefers-reduced-motion:reduce){
+  .track,.lay.warm,.fbeam,.fpill .dot,.fcaret{animation:none!important}
+  .lay.warm,.fbeam{display:none}
+}
+.fx-art{opacity:0;transition:opacity 1.2s}.fx-art.ready{opacity:1}
 </style>
-<link rel="stylesheet" href="assets/hero-bg.css">
 </head>
 <body>
 <div class="bg"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
@@ -358,6 +340,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <header><div class="container hd">
   <div class="logo">PromptForge</div>
   <nav class="dnav"><a href="#analyzer">Analyzer</a><a href="#faceswap">Face Swap</a><a href="#lab">Prompt Lab</a><a href="#library">Library</a><a href="#community">Community</a><a href="#faq">FAQ</a></nav>
+  <a class="hd-cta" href="#keys">API Settings</a>
   <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
 </div></header>
 
@@ -378,24 +361,28 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 
 <div class="container">
 
-<div class="hero reveal">
-  <div class="herostage"><div class="aurorastrip"></div><b class="sweep"></b></div>
-  <div class="badge"><span class="dot"></span>FREE AI PROMPT REVERSE-ENGINEER TOOL</div>
-  <div class="wordmark">PromptForge</div>
-  <h1>Turn Any Media Into<br><span class="typeblue" id="typeLine"></span><span class="caret">|</span></h1>
-  <p class="lead">Drop a video or image — get a ready-to-generate prompt for Veo, Midjourney, Flux &amp; more, plus stock-ready title, keywords &amp; category metadata. Everything runs in your browser.</p>
-  <div class="qchips">
-    <button class="qchip" onclick="quickTarget('Veo 3')">🎬 Veo 3</button>
-    <button class="qchip" onclick="quickTarget('Midjourney')">🎨 Midjourney</button>
-    <button class="qchip" onclick="quickTarget('Flux')">⚡ Flux</button>
-    <button class="qchip" onclick="quickTarget('Seedance')">🌊 Seedance</button>
+<section class="fx" id="top">
+  <div class="fx-bg" aria-hidden="true"><i class="fx-glow ga"></i><i class="fx-glow gb"></i><i class="fx-dots"></i></div>
+
+  <div class="fx-copy">
+    <p class="fpill"><span class="dot"></span>Free AI prompt reverse-engineer</p>
+    <h1 class="fx-h1"><span class="l1">Drop in a video. Get</span><span class="l2"><span class="typed" id="typeLine"></span><span class="fcaret"></span></span></h1>
+    <p class="flead">PromptForge watches your clip scene by scene and writes the prompt that would recreate it, plus stock titles and keywords. It runs in your browser.</p>
+    <div class="fcta">
+      <button class="fbtn primary" type="button" onclick="heroUpload()">Upload a video</button>
+      <a class="fbtn ghost" href="#keys">Add your free API key</a>
+    </div>
   </div>
-  <div class="stats">
-    <div class="stat"><span class="snum"><span id="statN1" data-t="100">0</span>%</span><span class="slab">CLIENT-SIDE</span></div>
-    <div class="stat"><span class="snum"><span id="statN2" data-t="3">0</span></span><span class="slab">AI PROVIDERS</span></div>
-    <div class="stat"><span class="snum"><span id="statN3" data-t="11">0</span></span><span class="slab">ART STYLES</span></div>
+
+  <div class="fx-art" id="fxArt" aria-hidden="true">
+    <div class="fx-art-in">
+      <div class="lay cool"><canvas class="track" id="fxCool"></canvas></div>
+      <div class="lay warm"><canvas class="track" id="fxWarm"></canvas></div>
+      <i class="fbeam"></i>
+    </div>
   </div>
-</div>
+  
+</section>
 
 <div class="marquee reveal" aria-hidden="true"><div class="mtrack"><span>ADOBE STOCK CSV <i>✦</i> SHUTTERSTOCK CSV <i>✦</i> MULTI-KEY ROTATION <i>✦</i> 100% CLIENT-SIDE <i>✦</i> VIDEO TO PROMPT <i>✦</i> IMAGE TO PROMPT <i>✦</i> PROMPT LAB <i>✦</i> 11 ART STYLES <i>✦</i> </span><span>ADOBE STOCK CSV <i>✦</i> SHUTTERSTOCK CSV <i>✦</i> MULTI-KEY ROTATION <i>✦</i> 100% CLIENT-SIDE <i>✦</i> VIDEO TO PROMPT <i>✦</i> IMAGE TO PROMPT <i>✦</i> PROMPT LAB <i>✦</i> 11 ART STYLES <i>✦</i> </span></div></div>
 
@@ -769,22 +756,33 @@ const STYLE_MAP={
   darkfantasy:'dark fantasy aesthetic, moody volumetric fog, ancient crumbling ruins, dramatic chiaroscuro lighting',
   flatvector:'flat vector illustration, clean geometric shapes, bold solid colors, minimal modern graphic design'
 };
-function quickTarget(t){$('target').value=t;document.getElementById('analyzer').scrollIntoView({behavior:'smooth'});toast('Target: '+t+' ✓')}
 
 /* ============ slide-in menu ============ */
 function toggleMenu(){$('drawer').classList.add('open');$('scrim').classList.add('show')}
 function closeMenu(){$('drawer').classList.remove('open');$('scrim').classList.remove('show')}
 
-/* ============ hero typing effect ============ */
+/* ============ hero v2: typing line + halftone film reel ============ */
+function heroUpload(){
+  const a=document.getElementById('analyzer');if(a)a.scrollIntoView({behavior:'smooth'});
+  const f=document.getElementById('filein');if(f)f.click();
+}
 (function(){
-  const PH=['Veo 3 prompts…','Midjourney prompts…','Flux prompts…','stock metadata…'];
-  const el=$('typeLine');let pi=0,ci=0,del=false;
-  (function tick(){
-    const word=PH[pi];
-    el.textContent=word.slice(0,ci);
-    if(!del){ci++;if(ci>word.length){del=true;return void setTimeout(tick,1400)}setTimeout(tick,75)}
-    else{ci--;if(ci<0){del=false;pi=(pi+1)%PH.length;ci=0;setTimeout(tick,350);return}setTimeout(tick,38)}
-  })();
+  /* typed line */
+  const el=document.getElementById('typeLine');
+  const PH=['Veo 3 scene prompts','Midjourney and Flux prompts','stock titles and keywords','ready-to-paste JSON'];
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(el){
+    if(reduce)el.textContent=PH[0];
+    else{let pi=0,ci=0,del=false;
+      (function tick(){
+        const w=PH[pi];el.textContent=w.slice(0,ci);
+        if(!del){ci++;if(ci>w.length){del=true;return void setTimeout(tick,1500)}setTimeout(tick,70)}
+        else{ci--;if(ci<0){del=false;pi=(pi+1)%PH.length;ci=0;setTimeout(tick,320);return}setTimeout(tick,34)}
+      })();
+    }
+  }
+
+  
 })();
 
 /* ============ multi-key vault: comma-joined arrays, round-robin rotation, 429 cooldown ============ */
@@ -1527,24 +1525,10 @@ function joinChannel(i){
 
 refreshKeys();renderLib();
 
-/* animated stat counters: 0 -> target over 1.2s, ease-out */
-(function(){
-  const ids=['statN1','statN2','statN3'];
-  function run(el){
-    const t=+el.dataset.t,t0=performance.now(),dur=1200;
-    (function f(n){
-      const p=Math.min((n-t0)/dur,1),e=1-Math.pow(1-p,3);
-      el.textContent=Math.round(t*e);
-      if(p<1)requestAnimationFrame(f);
-    })(t0);
-  }
-  const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){run(e.target);so.unobserve(e.target)}}),{threshold:.4});
-  ids.forEach(id=>{const el=document.getElementById(id);if(el)so.observe(el)});
-})();
-
 /* reveal-on-scroll */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
+<script src="assets/hero-v2.js" defer></script>
 </body>
 </html>
