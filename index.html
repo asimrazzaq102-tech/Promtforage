@@ -410,7 +410,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
   <label class="lbl">Add API key</label>
   <p class="sub" style="margin-bottom:10px">Add multiple keys per provider — PromptForge auto-rotates between them on rate limits.</p>
   <div class="addkey-row">
-    <input type="password" id="keyInput" placeholder="Paste key here (AIza… / gsk_… / sk-or-…)" autocomplete="off">
+    <input type="password" id="keyInput" placeholder="Paste key here (AQ… / AIza… / gsk_… / sk-or-…)" autocomplete="off">
     <select id="keyProv">
       <option value="auto">Auto Detect</option>
       <option value="gemini">Gemini</option>
@@ -828,7 +828,7 @@ function renderVault(){
   });
 }
 function detectProv(k,sel){
-  if(/^AIza/.test(k))return 'gemini';
+  if(/^AIza/.test(k)||/^AQ\./.test(k))return 'gemini';
   if(/^gsk_/.test(k))return 'groq';
   if(/^sk-or-/.test(k))return 'openrouter';
   return sel;
@@ -952,7 +952,7 @@ async function fetchT(url,opts,ms){
 async function callGemini(parts,model,key,maxTok){
   key=key||getKeys('gemini')[0];
   const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
-  const r=await fetchT(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.7,maxOutputTokens:maxTok||8192}})});
+  const r=await fetchT(url,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.7,maxOutputTokens:maxTok||8192}})});
   if(!r.ok){const body=(await r.text()).slice(0,200);throw new Error('Gemini error '+r.status+': '+body+((r.status===413||/too large|payload|exceeds/i.test(body))?' — file is too big for direct upload, try a smaller/compressed video.':''))}
   const j=await r.json();
   const t=j.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('');
