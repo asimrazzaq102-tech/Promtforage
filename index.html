@@ -372,6 +372,7 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
       <button class="fbtn primary" type="button" onclick="heroUpload()">Upload a video</button>
       <a class="fbtn ghost" href="#keys">Add your free API key</a>
     </div>
+    <p class="ucount" id="ucount" hidden><span class="udot"></span><span id="ucountNum">–</span>&nbsp;users</p>
   </div>
 
   <div class="fx-art" id="fxArt" aria-hidden="true">
@@ -1530,5 +1531,27 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 <script src="assets/hero-v2.js" defer></script>
+<!-- Visitor counter (Firebase Realtime Database, free tier). Paste your Firebase web config below to activate. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" defer></script>
+<script>
+window.addEventListener('load',function(){
+  var FIREBASE_CONFIG=null; /* Asim: paste your Firebase web config object here, e.g. {apiKey:"...",databaseURL:"https://....firebaseio.com",...} */
+  if(!FIREBASE_CONFIG||!window.firebase) return;
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    var ref=firebase.database().ref('pf_users');
+    if(!localStorage.getItem('pf_counted')){
+      ref.transaction(function(c){return (c||0)+1;},function(){localStorage.setItem('pf_counted','1');});
+    }
+    ref.on('value',function(snap){
+      var n=snap.val()||0,p=document.getElementById('ucount');
+      if(!p) return;
+      document.getElementById('ucountNum').textContent=n.toLocaleString('en-US');
+      p.hidden=false;requestAnimationFrame(function(){p.classList.add('show');});
+    });
+  }catch(e){/* counter stays hidden */}
+});
+</script>
 </body>
 </html>
