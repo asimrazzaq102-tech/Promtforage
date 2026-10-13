@@ -1045,6 +1045,10 @@ function baseRules(target){
   const museX=/^muse$/i.test(target)?' Write cinematic prompts optimized for Muse AI video generation.':'';
   return `Target generator: ${target}. Write camera language (shot type, lens feel, angle, movement for video), lighting, color palette, composition, mood/atmosphere, subject detail, environment, style descriptors native to ${target}.${extra}${museX} Never name real artists, brands, or watermarked sources.`;
 }
+function langRule(src){
+  const what=src==='input'?'the input text':"the attached video's speech";
+  return `LANGUAGE (HARD RULE): Detect ${what}. Write the ENTIRE prompt in that SAME language and SAME script. English source → full English prompt. Roman Hindi/Urdu source (Latin script) → full prompt in Roman Hindi/Urdu (Latin script, e.g. "ek gaon me ek ladka khet me kaam kar raha hai"), NOT Devanagari, NOT translated to English. Dialogue must be word-for-word in the original spoken words. Never translate; never switch to English unless the source itself is English.`;
+}
 function jsonAsk(){return `Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"prompt":"...","negative_prompt":"...","title":"...","keywords":["..."],"category":"...","description":"..."}`}
 function styleNote(){return (STYLE_SEL&&STYLE_MAP[STYLE_SEL])?` Artistic style direction: ${STYLE_MAP[STYLE_SEL]}.` : ''}
 function durNote(kind){
@@ -1077,12 +1081,12 @@ function detailRules(dur,unit,wp){
 function buildAnalyze(kind,target,style,dur){
   if(kind==='dual'){
     const idea=($('altStory')&&$('altStory').value.trim())||'';
-    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${detailRules(dur,'prompt')} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}). QUALITY BAR: each prompt must be detailed enough that an AI video generator (Google Flow / Veo) can recreate the video faithfully from the prompt alone — every story beat described shot-by-shot with full visual specificity, nothing left for the generator to guess:
-1. "replica": faithfully replicates the EXACT video — same scenes in order, same subjects, actions, setting, mood and camera language.
+    return `You are an expert AI video analyst and prompt engineer. Watch the attached video carefully.${styleNote()} Target generator: ${target}. ${langRule('video')} ${detailRules(dur,'prompt')} Write TWO cinematic generation prompts (single-paragraph professional style, no filler — camera language, lighting, palette, mood, subject and environment detail — ${baseRules(target)}). QUALITY BAR: each prompt must be detailed enough that an AI video generator (Google Flow / Veo) can recreate the video faithfully from the prompt alone — every story beat described shot-by-shot with full visual specificity, nothing left for the generator to guess:
+1. "prompt": faithfully replicates the EXACT video — same scenes in order, same subjects, actions, setting, mood and camera language. This is the main prompt.
 2. "alternative": the SAME video structure and approximate length, but a BRAND-NEW story: ${idea?`use this story idea: "${idea}"`:'invent an original, engaging story yourself'}. Keep the pacing and shot flow; change characters, setting, wardrobe, actions and dialogue (dialogue in the new story's natural language).
-Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"replica":"...","alternative":"..."}`;
+Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"prompt":"...","alternative":"..."}`;
   }
-  if(kind==='scenes')return `You are an expert AI video analyst and film director. ${detailRules(dur,'scene')} Split the attached video into natural scenes of roughly 10 seconds each (if the input is a single image, produce exactly 1 scene). For EACH scene write a full production-ready breakdown.${styleNote()} Target generator: ${target}. Dialogue must be in the characters' natural spoken language (e.g. Hindi/Urdu for South Asian rural settings). Match technical.aspect_ratio to the media's own orientation (use 9:16 if vertical, 16:9 if horizontal).
+  if(kind==='scenes')return `You are an expert AI video analyst and film director. ${detailRules(dur,'scene')} ${langRule('video')} Split the attached video into natural scenes of roughly 10 seconds each (if the input is a single image, produce exactly 1 scene). For EACH scene write a full production-ready breakdown.${styleNote()} Target generator: ${target}. Dialogue must be in the characters' natural spoken language (e.g. Hindi/Urdu for South Asian rural settings). Match technical.aspect_ratio to the media's own orientation (use 9:16 if vertical, 16:9 if horizontal).
 Return ONLY valid JSON, no markdown fences, no commentary. Schema:
 {"scenes":[{"scene_number":"Scene 1 of N · 0 sec to 10 sec","time_window":"0s – 10s","prompt":"full generation prompt for this scene","style":"e.g. Photorealistic cinematic live-action footage shot on 35mm film","scene":"location/set description","characters":[{"name":"...","appearance":"...","wardrobe":"...","action":"..."}],"camera":{"movement":"...","framing":"...","lens":"...","look":"..."},"lighting":{"key_light":"...","fill_and_ambient":"..."},"timeline":[{"time":"0.00s – 1.00s","action":"...","camera_motion":"...","dialogue":"...","sfx_cue":"..."}],"voice_over":{"language":"...","tone":"...","dialogue_log":[{"speaker":"...","text":"...","timestamp":"..."}]},"audio":{"ambient":"...","sfx":["..."],"music":"..."},"negative_prompt":["blurry","distorted anatomy","watermark","text overlay"],"technical":{"target_duration_sec":10,"aspect_ratio":"9:16","resolution":"720x1280"}}]}`;
   const rec=style==='recreate'
@@ -1094,14 +1098,14 @@ Return ONLY valid JSON, no markdown fences, no commentary. Schema:
     :`Also produce stock metadata: commercial title under 200 chars, ${kwCount} lowercase keywords, no duplicates, no brand names; one-sentence description; category one of: ${CATS.join(', ')}; plus a "negative_prompt": comma-separated list of things to AVOID when generating (artifacts, distortions, bad anatomy, watermark, text overlay, blur, low quality, oversaturation).`;
   if(kind==='video'&&DURATION!=='10s'){
     const rich=DURATION==='1min';
-    return `You are an expert AI video analyst. Analyze the attached video.${styleNote()} ${rec} ${baseRules(target)} ${detailRules(dur,'scene',rich?120:70)} Split it into natural scenes of roughly 10 seconds each, covering the clip's full length from start to end. For EACH scene write ${rich?'a richly detailed production prompt (full camera, lighting, action and mood detail)':'a compact but concrete 3-4 sentence prompt (exact action, camera, lighting, mood — no filler)'}. Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"scenes":[{"scene_number":"Scene 1 of N","time_window":"0s – 10s","prompt":"...","negative_prompt":"..."}]}`;
+    return `You are an expert AI video analyst. Analyze the attached video.${styleNote()} ${langRule('video')} ${rec} ${baseRules(target)} ${detailRules(dur,'scene',rich?120:70)} Split it into natural scenes of roughly 10 seconds each, covering the clip's full length from start to end. For EACH scene write ${rich?'a richly detailed production prompt (full camera, lighting, action and mood detail)':'a compact but concrete 3-4 sentence prompt (exact action, camera, lighting, mood — no filler)'}. Return ONLY valid JSON, no markdown fences, no commentary. Schema: {"scenes":[{"scene_number":"Scene 1 of N","time_window":"0s – 10s","prompt":"...","negative_prompt":"..."}]}`;
   }
-  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()}${durNote(kind)} ${rec} ${baseRules(target)}${kind==='video'?' '+detailRules(dur,'prompt'):''} ${kw} ${jsonAsk()}`;
+  return `You are an expert AI media analyst. Analyze the attached ${kind==='video'?'video':'image'}.${styleNote()} ${langRule('video')}${durNote(kind)} ${rec} ${baseRules(target)}${kind==='video'?' '+detailRules(dur,'prompt'):''} ${kw} ${jsonAsk()}`;
 }
 function buildLab(tool,target,input,n){
-  if(tool==='enhance')return `You are a prompt engineer. Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} Also include a negative_prompt: comma-separated list of things to AVOID (artifacts, distortions, bad anatomy, watermark, text, blur, low quality). Return ONLY valid JSON: {"prompt":"...","negative_prompt":"..."}\nIdea: ${input}`;
+  if(tool==='enhance')return `You are a prompt engineer. ${langRule('input')} Expand this rough idea into a full production-ready generation prompt for ${target}.${styleNote()} ${baseRules(target)} LENGTH (HARD RULE): NEVER SHORTEN — the output prompt must be LONGER (more words) than the input idea. Expand with concrete visible detail (camera, lighting, setting, actions, mood). A shorter output is a FAILED response. Also include a negative_prompt: comma-separated list of things to AVOID (artifacts, distortions, bad anatomy, watermark, text, blur, low quality). Return ONLY valid JSON: {"prompt":"...","negative_prompt":"..."}\nIdea: ${input}`;
   if(tool==='p2m')return `You are a stock-metadata expert. From the prompt below infer stock-upload metadata. Commercial title under 200 chars, 25-45 lowercase keywords, no duplicates, no brand names, one-sentence description, category one of: ${CATS.join(', ')}. Return ONLY valid JSON: {"title":"...","keywords":["..."],"category":"...","description":"..."}\nPrompt: ${input}`;
-  return `You are a prompt engineer. Write ${n} distinct variations of the prompt below for ${target} — same quality bar, different angles/subjects/moods.${styleNote()} Return ONLY valid JSON: {"variations":["..."]}\nPrompt: ${input}`;
+  return `You are a prompt engineer. ${langRule('input')} Write ${n} distinct variations of the prompt below for ${target} — same quality bar, different angles/subjects/moods.${styleNote()} Return ONLY valid JSON: {"variations":["..."]}\nPrompt: ${input}`;
 }
 function parseJSON(t){
   let s=t.trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
@@ -1205,10 +1209,10 @@ async function analyzeOne(q,sel){
     d=parseJSON(text);
   }
   if(kind==='dual'){
-    if(!d.replica&&!d.alternative)throw new Error('No prompts returned — try again.');
+    if(!d.prompt&&!d.replica&&!d.alternative)throw new Error('No prompts returned — try again.');
     const sty=(STYLE_SEL?STYLE_SEL+' + ':'')+STYLE;
     saveResult({file:q.file.name,thumb:q.thumb,kind:'dual',target,style:sty,prov:sel.provider,
-      prompt:d.replica||'',altPrompt:d.alternative||'',title:q.file.name+' — Dual prompt',ts:Date.now()});
+      prompt:d.prompt||d.replica||'',altPrompt:d.alternative||'',title:q.file.name+' — Dual prompt',ts:Date.now()});
     return;
   }
   const sceneArr=Array.isArray(d)?d:(Array.isArray(d.scenes)?d.scenes:[]);
@@ -1244,7 +1248,7 @@ async function buildVisionMessages(q,instr,prov){
   return [{role:'user',content}];
 }
 async function altRewrite(scenes,sel,target,storyIdea){
-  const instr=`You are a creative film director. Below is a scene-by-scene production breakdown of a video (JSON). Rewrite it as a BRAND-NEW story: ${storyIdea?`use this story idea: "${storyIdea}"`:'invent an original, engaging story yourself'}. RULES: keep the EXACT same number of scenes, the same time_windows, the same timeline structure (same beats per scene) and the same technical format — only change the narrative: characters, setting, wardrobe, actions, dialogue, mood and music. Dialogue must be in the new story's natural spoken language. Return ONLY valid JSON with the identical schema: {"scenes":[...]}.\n\nORIGINAL BREAKDOWN:\n${JSON.stringify(scenes).slice(0,60000)}`;
+  const instr=`You are a creative film director. Below is a scene-by-scene production breakdown of a video (JSON). Rewrite it as a BRAND-NEW story: ${storyIdea?`use this story idea: "${storyIdea}"`:'invent an original, engaging story yourself'}. RULES: keep the EXACT same number of scenes, the same time_windows, the same timeline structure (same beats per scene) and the same technical format — only change the narrative: characters, setting, wardrobe, actions, dialogue, mood and music. Dialogue must be in the new story's natural spoken language. Write the rewritten breakdown in the SAME language/script as the original breakdown. Return ONLY valid JSON with the identical schema: {"scenes":[...]}.\n\nORIGINAL BREAKDOWN:\n${JSON.stringify(scenes).slice(0,60000)}`;
   const text=await resilientCall(sel.provider,async s=>{
     if(s.provider==='gemini')return await callGeminiChain([{text:instr}],s.key,8192);
     const m=[{role:'user',content:instr}];
